@@ -11,7 +11,7 @@ export class UtilisateursDAO {
         throw new Error("loginUtilisateur method not implemented.");
     }
 
-    logoutUtilisateur(id) {
+    logoutUtilisateur(id, token, refreshToken) {
         throw new Error("logoutUtilisateur method not implemented.");
     }
 
