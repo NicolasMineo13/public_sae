@@ -6,12 +6,12 @@ const router = express.Router();
 
 // Routes publiques
 router.post("/login", utilisateursController.loginUtilisateur);
+router.post("/", utilisateursController.createUtilisateur);
+router.post("/logout/:id", utilisateursController.logoutUtilisateur);
 
 // Routes privées
 router.get("/", verifyToken, utilisateursController.getUtilisateurs);
-router.post("/", utilisateursController.createUtilisateur);
 router.patch("/:id", verifyToken, utilisateursController.updateUtilisateur);
 router.delete("/:id", verifyToken, utilisateursController.deleteUtilisateur);
-router.post("/logout/:id", verifyToken, utilisateursController.logoutUtilisateur);
 
 export default router;

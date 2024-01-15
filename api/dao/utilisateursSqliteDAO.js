@@ -93,7 +93,7 @@ export class UtilisateursSqliteDAO extends UtilisateursDAO {
 
 		if (updateResult.changes > 0) {
 			let insertResult = await db.run("INSERT INTO tokensblacklist (token) VALUES (?)", response.token);
-			let insertResultRefresh = await db.run("INSERT INTO tokensblacklist (token) VALUES (?)", response.refreshtoken);
+			let insertResultRefresh = await db.run("INSERT INTO tokensblacklist (token) VALUES (?)", response.refreshToken);
 			if (insertResult.changes > 0 && insertResultRefresh.changes > 0) {
 				return { status: true, message: "Utilisateur déconnecté avec succès." };
 			} else {
@@ -176,7 +176,6 @@ export class UtilisateursSqliteDAO extends UtilisateursDAO {
         if (!nom || !prenom || !email || !password || !id_role) {
             throw new Error("Paramètres manquants");
         }
-
 
         // Vérifier si le mail est valide
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

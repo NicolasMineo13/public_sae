@@ -1,5 +1,7 @@
 # Ignorer le dossier node_modules
-node_modules/
+api/node_modules/
+client/node_modules/
 
 # Ignorer le fichier package-lock.json
-package-lock.json
+api/package-lock.json
+client/package-lock.json
