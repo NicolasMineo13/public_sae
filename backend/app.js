@@ -1,10 +1,12 @@
+import cors from 'cors';
 import express from 'express';
 import utilisateursRoutes from "./routes/utilisateursRoutes.js";
 import { verifyToken } from "./middlewares/verifyToken.js";
 
 const app = express();
-const PORT = 3000;
+const PORT = 5000;
 
+app.use(cors());
 app.use(express.json());
 
 app.use("/utilisateurs", utilisateursRoutes);
