@@ -24,24 +24,24 @@ const UtilisateursController = {
     },
 
     logoutUtilisateur: async (req, res) => {
-		const { id } = req.params;
+        const { id } = req.params;
         const token = req.headers.authorization;
         const refreshToken = req.headers["refresh-token"];
 
-		try {
-			const logout = await UtilisateursService.logoutUtilisateur(id, token, refreshToken);
-			if (logout.status === true) {
-				res.json({ status: true, message: "Utilisateur déconnecté avec succès." });
-			} else {
-				res.status(404).json({ error: "Déconnexion impossible." });
-			}
-		} catch (error) {
-			res.status(500).json({
-				error: "Erreur lors de la déconnexion de l'utilisateur",
-				errorMsg: error.message,
-			});
-		}
-	},
+        try {
+            const logout = await UtilisateursService.logoutUtilisateur(id, token, refreshToken);
+            if (logout.status === true) {
+                res.json({ status: true, message: "Utilisateur déconnecté avec succès." });
+            } else {
+                res.status(404).json({ error: "Déconnexion impossible." });
+            }
+        } catch (error) {
+            res.status(500).json({
+                error: "Erreur lors de la déconnexion de l'utilisateur",
+                errorMsg: error.message,
+            });
+        }
+    },
 
     getUtilisateurs: async (req, res) => {
         const { id, nom, prenom, email, login, password, id_role, token, refreshToken } = req.query;
@@ -88,7 +88,7 @@ const UtilisateursController = {
                 conditions
             );
 
-            const utilisateursOBject = utilisateurs.map(user => new Utilisateur(
+            const utilisateursObject = utilisateurs.map(user => new Utilisateur(
                 user.id,
                 user.nom,
                 user.prenom,
@@ -100,7 +100,7 @@ const UtilisateursController = {
                 user.refreshToken
             ));
 
-            res.json({ utilisateurs: utilisateursOBject });
+            res.json({ utilisateurs: utilisateursObject });
         } catch (error) {
             res.status(500).json({
                 error: "Erreur lors de la récupération des utilisateurs",
@@ -135,15 +135,15 @@ const UtilisateursController = {
     },
 
     updateUtilisateur: async (req, res) => {
-		const { id } = req.params;
-		const updatedFields = req.query;
+        const { id } = req.params;
+        const updatedFields = req.query;
 
-		if (!id) {
-			res.status(400).json({
-				error: "L'id de l'utilisateur est requis.",
-			});
-			return;
-		}
+        if (!id) {
+            res.status(400).json({
+                error: "L'id de l'utilisateur est requis.",
+            });
+            return;
+        }
 
         // Si pas de champs à mettre à jour
         if (Object.keys(updatedFields).length === 0) {
@@ -153,48 +153,48 @@ const UtilisateursController = {
             return;
         }
 
-		try {
-			const utilisateur = await UtilisateursService.updateUtilisateur(
-				id,
-				updatedFields
-			);
-			if (utilisateur) {
-				res.json({ status: true, message: "Utilisateur mis à jour avec succès." });
-			} else {
-				res.status(404).json({ error: "Utilisateur non trouvé." });
-			}
-		} catch (error) {
-			res.status(500).json({
-				error: "Erreur lors de la mise à jour de l'utilisateur",
-				errorMsg: error.message,
-			});
-		}
-	},
+        try {
+            const utilisateur = await UtilisateursService.updateUtilisateur(
+                id,
+                updatedFields
+            );
+            if (utilisateur) {
+                res.json({ status: true, message: "Utilisateur mis à jour avec succès." });
+            } else {
+                res.status(404).json({ error: "Utilisateur non trouvé." });
+            }
+        } catch (error) {
+            res.status(500).json({
+                error: "Erreur lors de la mise à jour de l'utilisateur",
+                errorMsg: error.message,
+            });
+        }
+    },
 
-	deleteUtilisateur: async (req, res) => {
-		const { id } = req.params;
+    deleteUtilisateur: async (req, res) => {
+        const { id } = req.params;
 
-		if (!id) {
-			res.status(400).json({
-				error: "L'id de l'utilisateur est requis.",
-			});
-			return;
-		}
+        if (!id) {
+            res.status(400).json({
+                error: "L'id de l'utilisateur est requis.",
+            });
+            return;
+        }
 
-		try {
-			const utilisateur = await UtilisateursService.deleteUtilisateur(id);
-			if (utilisateur) {
-				res.json({ status: true, message: "Utilisateur supprimé avec succès." });
-			} else {
-				res.status(404).json({ error: "Utilisateur non trouvé." });
-			}
-		} catch (error) {
-			res.status(500).json({
-				error: "Erreur lors de la suppression de l'utilisateur",
-				errorMsg: error.message,
-			});
-		}
-	},
+        try {
+            const utilisateur = await UtilisateursService.deleteUtilisateur(id);
+            if (utilisateur) {
+                res.json({ status: true, message: "Utilisateur supprimé avec succès." });
+            } else {
+                res.status(404).json({ error: "Utilisateur non trouvé." });
+            }
+        } catch (error) {
+            res.status(500).json({
+                error: "Erreur lors de la suppression de l'utilisateur",
+                errorMsg: error.message,
+            });
+        }
+    },
 }
 
 export default UtilisateursController;

@@ -1,6 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 import utilisateursRoutes from "./routes/utilisateursRoutes.js";
+import ticketsRoutes from "./routes/ticketsRoutes.js";
 import { verifyToken } from "./middlewares/verifyToken.js";
 
 const app = express();
@@ -10,6 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/utilisateurs", utilisateursRoutes);
+app.use("/tickets", ticketsRoutes);
 app.use("/verifyToken", verifyToken, (req, res) => {
     res.json({ status: true });
 });
