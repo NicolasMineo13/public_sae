@@ -37,7 +37,7 @@ function Login() {
 
     return (
         <div className="login-container">
-            <h2>Page de Connexion</h2>
+            <h2>Connexion</h2>
             <div className="input-group">
                 <label>Nom d'utilisateur:</label>
                 <input type="text" value={login} onChange={e => setLogin(e.target.value)} />

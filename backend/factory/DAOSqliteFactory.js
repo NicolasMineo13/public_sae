@@ -1,5 +1,6 @@
 import { DAOFactory } from "./DAOFactory.js";
 import { UtilisateursSqliteDAO } from "../dao/utilisateursSqliteDAO.js";
+import { TicketsSqliteDAO } from "../dao/ticketsSqliteDAO.js";
 
 export class DAOSqliteFactory extends DAOFactory {
     constructor() {
@@ -9,4 +10,9 @@ export class DAOSqliteFactory extends DAOFactory {
     createUtilisateursDAO() {
         return new UtilisateursSqliteDAO();
     }
+
+    createTicketsDAO() {
+        return new TicketsSqliteDAO();
+    }
+
 }

@@ -79,7 +79,7 @@ export class TicketsSqliteDAO extends TicketsDAO {
     async createTicket(titre, description, date_creation, id_utilisateur_demandeur, id_utilisateur_technicien, id_statut, date_derniere_modif, date_cloture) {
         const db = await this.dbPromise;
 
-        if (!titre || !description || !date_creation || !id_utilisateur_demandeur || !id_utilisateur_technicien || !id_statut || !date_derniere_modif || !date_cloture) {
+        if (!titre || !description || !date_creation || !id_utilisateur_demandeur || !id_utilisateur_technicien || !id_statut) {
             throw new Error("Paramètres manquants");
         }
 
@@ -91,8 +91,8 @@ export class TicketsSqliteDAO extends TicketsDAO {
             id_utilisateur_demandeur,
             id_utilisateur_technicien,
             id_statut,
-            date_derniere_modif,
-            date_cloture
+            null,
+            null
         );
     }
 

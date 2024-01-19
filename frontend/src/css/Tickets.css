@@ -1,0 +1,100 @@
+/* Tickets.css */
+
+.tickets-container {
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 20px;
+	background-color: #fff; /* Ajoutez une couleur de fond */
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Ajoutez une ombre pour la profondeur */
+	border-radius: 8px; /* Ajoutez des coins arrondis */
+	margin-top: 20px;
+}
+
+h1 {
+	font-size: 24px;
+	margin-bottom: 20px;
+	color: #333; /* Ajoutez une couleur de texte */
+}
+
+input[type="text"] {
+	width: 100%;
+	padding: 10px;
+	font-size: 16px;
+	border: 1px solid #ccc; /* Ajoutez une bordure */
+	border-radius: 4px; /* Ajoutez des coins arrondis */
+}
+
+.filter-section {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 20px;
+}
+
+.select-wrapper {
+	flex: 1;
+}
+
+select {
+	width: 100%;
+	padding: 10px;
+	font-size: 16px;
+	border: 1px solid #ccc; /* Ajoutez une bordure */
+	border-radius: 4px; /* Ajoutez des coins arrondis */
+}
+
+.filter-input {
+	flex: 2;
+}
+
+button {
+	padding: 10px 20px;
+	font-size: 16px;
+	background-color: #007bff; /* Couleur de fond bleue */
+	color: #fff; /* Couleur de texte blanche */
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.button__filter {
+	margin-top: 10px;
+}
+
+.selected-filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-bottom: 20px;
+}
+
+.filter-item {
+	background-color: #007bff; /* Couleur de fond bleue */
+	color: #fff; /* Couleur de texte blanche */
+	padding: 5px 10px;
+	border-radius: 4px;
+}
+
+.ticket-list {
+	list-style: none;
+	padding: 0;
+}
+
+.ticket-list li {
+	background-color: #f4f4f4;
+	padding: 20px;
+	margin-bottom: 20px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ajoutez une légère ombre */
+}
+
+.ticket-list h2 {
+	font-size: 18px;
+	margin: 0;
+}
+
+.ticket-list p {
+	font-size: 16px;
+	margin-top: 10px;
+}

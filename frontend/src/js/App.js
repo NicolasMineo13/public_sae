@@ -2,14 +2,21 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import HomePage from './HomePage'; // Assurez-vous d'avoir ce composant
 import Login from './Login'; // Votre composant de connexion
+import Tickets from './Tickets'; // Votre composant de tickets
+import CreateTicket from './CreateTicket'; // Votre composant de création de ticket
+import { AuthProvider } from './AuthContext'; // Importez le AuthProvider ici
 
 function App() {
 	return (
 		<Router>
-			<Routes>
-				<Route path="/" element={<Login />} />
-				<Route path="/home" element={<HomePage />} />
-			</Routes>
+			<AuthProvider>
+				<Routes>
+					<Route path="/" element={<Login />} />
+					<Route path="/home" element={<HomePage />} />
+					<Route path="/tickets" element={<Tickets />} />
+					<Route path="/tickets/create" element={<CreateTicket />} />
+				</Routes>
+			</AuthProvider>
 		</Router>
 	);
 }
