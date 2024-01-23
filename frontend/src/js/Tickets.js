@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import '../css/Tickets.css'; // Assurez-vous d'ajouter ce fichier CSS
-import { useAuth } from './AuthContext'; // Importez le hook useAuth
+import '../css/Tickets.css';
+import Header from './Header';
+import { useAuth } from './AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 function Tickets() {
     const [tickets, setTickets] = useState([]);
-    const [filterField, setFilterField] = useState('id'); // Champ de filtre par défaut
+    const [filterField, setFilterField] = useState('id');
     const [filterValue, setFilterValue] = useState('');
     const [selectedFilters, setSelectedFilters] = useState([]);
 
-    const navigate = useNavigate(); // Obtenez la fonction navigate ici
+    const navigate = useNavigate();
 
-    // Fonction pour rediriger vers la page de création de ticket
     const handleCreateTicket = () => {
         navigate('/tickets/create');
     };
 
-    const { isLoggedIn } = useAuth(); // Utilisez le hook useAuth pour obtenir la fonction isLoggedIn
+    const { isLoggedIn } = useAuth();
 
-    isLoggedIn(); // Appelez la fonction isLoggedIn pour vérifier si l'utilisateur est connecté
+    isLoggedIn();
 
     const fetchTickets = async () => {
         try {
@@ -26,7 +26,6 @@ function Tickets() {
             const refreshToken = localStorage.getItem('refreshtoken');
             let url = 'http://localhost:5000/tickets';
 
-            // Si des filtres sont définis, ajoutez-les à l'URL de la requête
             if (selectedFilters.length > 0) {
                 const filterParams = selectedFilters.map(filter => `${filter.field}=${encodeURIComponent(filter.value)}`);
                 url += `?${filterParams.join('&')}`;
@@ -75,91 +74,77 @@ function Tickets() {
             const existingFilterIndex = selectedFilters.findIndex(filter => filter.field === filterField);
 
             if (existingFilterIndex !== -1) {
-                // Si un filtre avec le même champ existe, mettez à jour sa valeur
                 const updatedFilters = [...selectedFilters];
                 updatedFilters[existingFilterIndex].value = filterValue;
                 setSelectedFilters(updatedFilters);
             } else {
-                // Sinon, ajoutez un nouveau filtre
                 setSelectedFilters([...selectedFilters, { field: filterField, value: filterValue }]);
             }
 
-            setFilterField('id'); // Réinitialiser le champ de filtre
+            setFilterField('id');
             setFilterValue('');
         }
     };
 
     return (
-        <div className="tickets-container">
-            <h1>Liste des Tickets</h1>
-            <div className="filter-section">
-                <select value={filterField} onChange={handleFilterFieldChange}>
-                    <option value="id">ID</option>
-                    <option value="titre">Titre</option>
-                    <option value="description">Description</option>
-                    <option value="date_creation">Date de création</option>
-                    <option value="id_utilisateur_demandeur">Demandeur</option>
-                    <option value="id_utilisateur_technicien">Technicien</option>
-                    <option value="id_statut">Statut</option>
-                    <option value="date_derniere_modif">Date de Modification</option>
-                    <option value="date_cloture">Date de clôture</option>
-                </select>
-                <input
-                    type="text"
-                    placeholder="Valeur de filtre..."
-                    value={filterValue}
-                    onChange={handleFilterValueChange}
-                />
-                <button onClick={handleAddFilter}>Ajouter</button>
+        <div className="home__container">
+            <Header />
+            <div className="tickets__container">
+                <div className='d-flex align-items-center justify-content-between'>
+                    <h1 className='m-0'>Liste des Tickets</h1>
+                    <button className='tickets__button tickets__button-create ms-3' onClick={handleCreateTicket}>Créer un ticket</button>
+                </div>
+                <div className="tickets__filter-section">
+                    <select className="tickets__select" value={filterField} onChange={handleFilterFieldChange}>
+                        <option value="id">ID</option>
+                        <option value="titre">Titre</option>
+                        <option value="description">Description</option>
+                        <option value="date_creation">Date de création</option>
+                        <option value="id_utilisateur_demandeur">Demandeur</option>
+                        <option value="id_utilisateur_technicien">Technicien</option>
+                        <option value="id_statut">Statut</option>
+                        <option value="date_derniere_modif">Date de Modification</option>
+                        <option value="date_cloture">Date de clôture</option>
+                    </select>
+                    <input className="tickets__input" type="text" placeholder="Valeur de filtre..." value={filterValue} onChange={handleFilterValueChange} />
+                    <button className='tickets__button' onClick={handleAddFilter}>Ajouter</button>
+                </div>
+                <div className="tickets__selected-filters">
+                    {selectedFilters.map((filter, index) => (
+                        <div key={index} className="tickets__filter-item">
+                            {filter.field}: {filter.value}
+                        </div>
+                    ))}
+                </div>
+                <button className='tickets__button' onClick={() => setSelectedFilters([])}>Effacer les filtres</button>
+                <button className='tickets__button ms-3' onClick={fetchTickets}>Filtrer</button>
+                <table className="tickets__table tickets__table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Titre</th>
+                            <th>Statut</th>
+                            <th>Dernière modification</th>
+                            <th>Date de création</th>
+                            <th>Demandeur</th>
+                            <th>Technicien</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {tickets.map(ticket => (
+                            <tr key={ticket._id}>
+                                <td>{ticket._id}</td>
+                                <td>{ticket._titre}</td>
+                                <td>{ticket._id_statut}</td>
+                                <td>{ticket._date_derniere_modif}</td>
+                                <td>{new Date(ticket._date_creation).toLocaleDateString('fr-FR')}</td>
+                                <td>{ticket._id_utilisateur_demandeur}</td>
+                                <td>{ticket._id_utilisateur_technicien}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
-            <div className="selected-filters">
-                {selectedFilters.map((filter, index) => (
-                    <div key={index} className="filter-item">
-                        {filter.field}: {filter.value}
-                    </div>
-                ))}
-            </div>
-            <button onClick={() => setSelectedFilters([])}>Effacer les filtres</button>
-            <button className='button__filter' onClick={fetchTickets}>Filtrer</button>
-            <button className='button__filter' onClick={handleCreateTicket}>Créer un ticket</button>
-            <ul className="ticket-list">
-                {tickets.map(ticket => (
-                    <li key={ticket._id} className="ticket-item">
-                        <div className="ticket-header">
-                            <h2 className="ticket-title">{ticket._titre}</h2>
-                            <span className="ticket-id">Ticket N° {ticket._id}</span>
-                        </div>
-                        <div className="ticket-description">
-                            <p>{ticket._description}</p>
-                        </div>
-                        <div className="ticket-details">
-                            <div className="detail">
-                                <span className="detail-label">Date de création : </span>
-                                <span className="detail-value">{ticket._date_creation}</span>
-                            </div>
-                            <div className="detail">
-                                <span className="detail-label">Demandeur : </span>
-                                <span className="detail-value">{ticket._id_utilisateur_demandeur}</span>
-                            </div>
-                            <div className="detail">
-                                <span className="detail-label">Technicien : </span>
-                                <span className="detail-value">{ticket._id_utilisateur_technicien}</span>
-                            </div>
-                            <div className="detail">
-                                <span className="detail-label">Statut : </span>
-                                <span className="detail-value">{ticket._id_statut}</span>
-                            </div>
-                            {ticket._date_derniere_modif && (
-                                <div className="detail">
-                                    <span className="detail-label">Date de dernière modification : </span>
-                                    <span className="detail-value">{ticket._date_derniere_modif}</span>
-                                </div>
-                            )}
-                        </div>
-                    </li>
-                ))}
-            </ul>
-
         </div>
     );
 }

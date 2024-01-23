@@ -9,7 +9,6 @@ function Login() {
     const navigate = useNavigate(); // Ajout de la déclaration de navigate
 
     const handleLogin = async () => {
-        // Construire l'URL avec les paramètres de requête
         const queryParams = new URLSearchParams({ login, password });
         const url = `http://localhost:5000/utilisateurs/login?${queryParams}`;
 
@@ -36,18 +35,16 @@ function Login() {
     };
 
     return (
-        <div className="login-container">
+        <div className="login__container">
             <h2>Connexion</h2>
-            <div className="input-group">
-                <label>Nom d'utilisateur:</label>
-                <input type="text" value={login} onChange={e => setLogin(e.target.value)} />
+            <div className="login__input-group">
+                <input type="text" placeholder="Login" value={login} onChange={e => setLogin(e.target.value)} />
             </div>
-            <div className="input-group">
-                <label>Mot de passe:</label>
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
+            <div className="login__input-group">
+                <input type="password" placeholder='Mot de passe' value={password} onChange={e => setPassword(e.target.value)} />
             </div>
-            <button onClick={handleLogin}>Se Connecter</button>
-            {loginError && <p className="error-message">{loginError}</p>}
+            <button className='login__button' onClick={handleLogin}>Se Connecter</button>
+            {loginError && <p className="login__error-message">{loginError}</p>}
         </div>
     );
 }

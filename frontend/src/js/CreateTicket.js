@@ -32,7 +32,7 @@ function CreateTicket() {
 
         try {
             const token = localStorage.getItem('token');
-            const refreshToken = localStorage.getItem('refreshToken');
+            const refreshToken = localStorage.getItem('refreshtoken');
 
             // Convertissez l'objet newTicket en une chaîne de requête
             const queryParams = new URLSearchParams(newTicket);
@@ -87,7 +87,7 @@ function CreateTicket() {
                 <div className="form-group">
                     <label htmlFor="date_creation">Date de Création :</label>
                     <input
-                        type="date"
+                        type="datetime-local"
                         id="date_creation"
                         value={date_creation}
                         onChange={(e) => setCreationDate(e.target.value)}

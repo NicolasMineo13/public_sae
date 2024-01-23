@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './HomePage'; // Assurez-vous d'avoir ce composant
 import Login from './Login'; // Votre composant de connexion
 import Tickets from './Tickets'; // Votre composant de tickets

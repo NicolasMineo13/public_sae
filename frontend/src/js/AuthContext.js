@@ -1,16 +1,21 @@
 import React, { createContext, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children, navigate }) => { // Ajoutez navigate comme prop
+export const AuthProvider = ({ children }) => {
+
+    const navigate = useNavigate();
 
     const isLoggedIn = async () => {
         try {
             const token = localStorage.getItem('token');
             const refreshToken = localStorage.getItem('refreshtoken');
 
-            // console.log('Token:', token);
-            // console.log('Refresh token:', refreshToken);
+            if (!token || !refreshToken) {
+                navigate('/');
+                return;
+            }
 
             const response = await fetch(`http://localhost:5000/verifyToken`, {
                 method: 'GET',
@@ -23,9 +28,9 @@ export const AuthProvider = ({ children, navigate }) => { // Ajoutez navigate co
 
             if (!response.ok) {
                 localStorage.removeItem('token');
-                localStorage.removeItem('refreshToken');
+                localStorage.removeItem('refreshtoken');
                 localStorage.removeItem('id');
-                navigate('/'); // Utilisez la fonction navigate ici
+                navigate('/');
                 return response.json().then((err) => {
                     throw new Error(err.error);
                 });
@@ -47,8 +52,36 @@ export const AuthProvider = ({ children, navigate }) => { // Ajoutez navigate co
         }
     };
 
+    const logout = async () => {
+        try {
+            const id = localStorage.getItem('id');
+            const token = localStorage.getItem('token');
+            const refreshToken = localStorage.getItem('refreshtoken');
+
+            const response = await fetch(`http://localhost:5000/utilisateurs/logout/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token,
+                    'Refresh-Token': refreshToken
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Logout failed');
+            }
+
+            localStorage.removeItem('token');
+            localStorage.removeItem('refreshtoken');
+            localStorage.removeItem('id');
+            navigate('/');
+        } catch (error) {
+            console.error('Erreur lors de la requête:', error.message);
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ isLoggedIn }}>
+        <AuthContext.Provider value={{ isLoggedIn, logout }}>
             {children}
         </AuthContext.Provider>
     );
