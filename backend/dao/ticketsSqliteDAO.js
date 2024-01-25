@@ -91,7 +91,7 @@ export class TicketsSqliteDAO extends TicketsDAO {
             id_utilisateur_demandeur,
             id_utilisateur_technicien,
             id_statut,
-            null,
+            date_creation,
             null
         );
     }

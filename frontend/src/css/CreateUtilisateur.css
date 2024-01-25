@@ -1,6 +1,6 @@
 /* CreateTicket.css */
 
-.create-ticket__container {
+.create-utilisateur__container {
 	max-width: 800px;
 	margin: 0 auto;
 	padding: 20px;
@@ -10,11 +10,11 @@
 	margin-top: 20px;
 }
 
-.create-ticket__form-group {
+.create-utilisateur__form-group {
 	margin-bottom: 20px;
 }
 
-.create-ticket__input {
+.create-utilisateur__input {
 	width: 100%;
 	height: 3vh;
 	font-size: 16px;
@@ -22,7 +22,7 @@
 	border-radius: 4px;
 }
 
-.create-ticket__button {
+.create-utilisateur__button {
 	padding: 10px 20px;
 	font-size: 16px;
 	background-color: #f19730;
@@ -32,11 +32,11 @@
 	cursor: pointer;
 }
 
-.create-ticket__button:hover {
+.create-utilisateur__button:hover {
 	background-color: #b16f25;
 }
 
-.create-ticket__back-button {
+.create-utilisateur__back-button {
 	text-decoration: none;
 	color: #000;
 }

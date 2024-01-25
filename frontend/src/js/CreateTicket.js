@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import '../css/CreateTicket.css'; // Assurez-vous d'ajouter ce fichier CSS
 import { useAuth } from './AuthContext'; // Importez le hook useAuth
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import Header from './Header';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 function CreateTicket() {
     const [titre, setTitle] = useState('');
@@ -62,70 +65,41 @@ function CreateTicket() {
     };
 
     return (
-        <div className="create-ticket-container">
-            <h1>Créer un Ticket</h1>
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label htmlFor="titre">Titre :</label>
-                    <input
-                        type="text"
-                        id="titre"
-                        value={titre}
-                        onChange={(e) => setTitle(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="description">Description :</label>
-                    <textarea
-                        id="description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="date_creation">Date de Création :</label>
-                    <input
-                        type="datetime-local"
-                        id="date_creation"
-                        value={date_creation}
-                        onChange={(e) => setCreationDate(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="id_utilisateur_demandeur">Demandeur :</label>
-                    <input
-                        type="text"
-                        id="id_utilisateur_demandeur"
-                        value={id_utilisateur_demandeur}
-                        onChange={(e) => setDemandeur(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="id_utilisateur_technicien">Technicien :</label>
-                    <input
-                        type="text"
-                        id="id_utilisateur_technicien"
-                        value={id_utilisateur_technicien}
-                        onChange={(e) => setTechnicien(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="id_statut">Statut :</label>
-                    <input
-                        type="text"
-                        id="id_statut"
-                        value={id_statut}
-                        onChange={(e) => setStatut(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit">Créer</button>
-            </form>
+        <div className="home__container">
+            <Header />
+            <div className="create-ticket__container">
+                <Link to="/tickets" className="create-ticket__back-button">
+                    <FontAwesomeIcon icon={faArrowLeft} />
+                </Link>
+                <h1>Créer un Ticket</h1>
+                <form onSubmit={handleSubmit}>
+                    <div className="create-ticket__form-group">
+                        <label htmlFor="titre">Titre :</label>
+                        <input type="text" id="titre" value={titre} onChange={(e) => setTitle(e.target.value)} className="create-ticket__input" required />
+                    </div>
+                    <div className="create-ticket__form-group">
+                        <label htmlFor="description">Description :</label>
+                        <textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} className="create-ticket__input" required />
+                    </div>
+                    <div className="create-ticket__form-group">
+                        <label htmlFor="date_creation">Date de Création :</label>
+                        <input type="datetime-local" id="date_creation" value={date_creation} onChange={(e) => setCreationDate(e.target.value)} className="create-ticket__input" required />
+                    </div>
+                    <div className="create-ticket__form-group">
+                        <label htmlFor="id_utilisateur_demandeur">Demandeur :</label>
+                        <input type="text" id="id_utilisateur_demandeur" value={id_utilisateur_demandeur} onChange={(e) => setDemandeur(e.target.value)} className="create-ticket__input" required />
+                    </div>
+                    <div className="create-ticket__form-group">
+                        <label htmlFor="id_utilisateur_technicien">Technicien :</label>
+                        <input type="text" id="id_utilisateur_technicien" value={id_utilisateur_technicien} onChange={(e) => setTechnicien(e.target.value)} className="create-ticket__input" required />
+                    </div>
+                    <div className="create-ticket__form-group">
+                        <label htmlFor="id_statut">Statut :</label>
+                        <input type="text" id="id_statut" value={id_statut} onChange={(e) => setStatut(e.target.value)} className="create-ticket__input" required />
+                    </div>
+                    <button className="create-ticket__button" type="submit">Créer</button>
+                </form>
+            </div>
         </div>
     );
 }

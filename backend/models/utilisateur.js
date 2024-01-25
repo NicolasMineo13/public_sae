@@ -1,5 +1,5 @@
 export class Utilisateur {
-    constructor(id, nom, prenom, email, login, password, role) {
+    constructor(id, nom, prenom, email, login, password, role, token, refreshToken) {
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
@@ -7,6 +7,8 @@ export class Utilisateur {
         this.login = login;
         this.password = password;
         this.role = role;
+        this.token = token;
+        this.refreshToken = refreshToken;
     }
 
     get id() {
@@ -37,6 +39,14 @@ export class Utilisateur {
         return this._role;
     }
 
+    get token() {
+        return this._token;
+    }
+
+    get refreshToken() {
+        return this._refreshToken;
+    }
+
     set id(id) {
         this._id = id;
     }
@@ -63,5 +73,13 @@ export class Utilisateur {
 
     set role(role) {
         this._role = role;
+    }
+
+    set token(token) {
+        this._token = token;
+    }
+
+    set refreshToken(refreshToken) {
+        this._refreshToken = refreshToken;
     }
 }

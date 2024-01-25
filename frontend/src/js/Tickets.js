@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import '../css/Tickets.css';
 import Header from './Header';
 import { useAuth } from './AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 function Tickets() {
     const [tickets, setTickets] = useState([]);
@@ -81,7 +83,6 @@ function Tickets() {
                 setSelectedFilters([...selectedFilters, { field: filterField, value: filterValue }]);
             }
 
-            setFilterField('id');
             setFilterValue('');
         }
     };
@@ -91,6 +92,9 @@ function Tickets() {
             <Header />
             <div className="tickets__container">
                 <div className='d-flex align-items-center justify-content-between'>
+                    <Link to='/home' className='tickets__back-button'>
+                        <FontAwesomeIcon icon={faArrowLeft} className='me-2' />
+                    </Link>
                     <h1 className='m-0'>Liste des Tickets</h1>
                     <button className='tickets__button tickets__button-create ms-3' onClick={handleCreateTicket}>Créer un ticket</button>
                 </div>
@@ -136,8 +140,8 @@ function Tickets() {
                                 <td>{ticket._id}</td>
                                 <td>{ticket._titre}</td>
                                 <td>{ticket._id_statut}</td>
-                                <td>{ticket._date_derniere_modif}</td>
-                                <td>{new Date(ticket._date_creation).toLocaleDateString('fr-FR')}</td>
+                                <td>{new Date(ticket._date_derniere_modif).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</td>
+                                <td>{new Date(ticket._date_creation).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</td>
                                 <td>{ticket._id_utilisateur_demandeur}</td>
                                 <td>{ticket._id_utilisateur_technicien}</td>
                             </tr>

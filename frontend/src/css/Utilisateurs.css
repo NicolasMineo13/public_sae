@@ -1,7 +1,7 @@
 /* Tickets.css */
 
-.tickets__container {
-	max-width: 800px;
+.utilisateurs__container {
+	max-width: 120vh;
 	margin: 0 auto;
 	padding: 20px;
 	background-color: #fff;
@@ -10,7 +10,7 @@
 	margin-top: 20px;
 }
 
-.tickets__input {
+.utilisateurs__input {
 	width: 100%;
 	padding: 10px;
 	font-size: 16px;
@@ -18,18 +18,18 @@
 	border-radius: 4px;
 }
 
-.tickets__filter-section {
+.utilisateurs__filter-section {
 	display: flex;
 	align-items: center;
 	gap: 10px;
 	margin-bottom: 20px;
 }
 
-.tickets__select-wrapper {
+.utilisateurs__select-wrapper {
 	flex: 1;
 }
 
-.tickets__select {
+.utilisateurs__select {
 	width: 100%;
 	padding: 10px;
 	font-size: 16px;
@@ -37,7 +37,7 @@
 	border-radius: 4px;
 }
 
-.tickets__button {
+.utilisateurs__button {
 	padding: 10px 20px;
 	font-size: 16px;
 	background-color: #f19730;
@@ -47,36 +47,36 @@
 	cursor: pointer;
 }
 
-.tickets__button:hover {
+.utilisateurs__button:hover {
 	background-color: #b16f25;
 }
 
-.tickets__button-filter {
+.utilisateurs__button-filter {
 	margin-top: 1vh;
 }
 
-.tickets__selected-filters {
+.utilisateurs__selected-filters {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 10px;
 	margin-bottom: 20px;
 }
 
-.tickets__filter-item {
+.utilisateurs__filter-item {
 	background-color: #f19730;
 	color: #fff;
 	padding: 5px 10px;
 	border-radius: 4px;
 }
 
-.tickets__table {
+.utilisateurs__table {
 	margin-top: 2vh;
 	width: 100%;
 	border-collapse: collapse;
 	border: 1px solid #ccc;
 }
 
-.tickets__table th {
+.utilisateurs__table th {
 	background-color: #343541;
 	color: white;
 	border: 1px solid #ccc;
@@ -84,17 +84,17 @@
 	text-align: left;
 }
 
-.tickets__table td {
+.utilisateurs__table td {
 	border: 1px solid #ccc;
 	padding: 8px;
 }
 
-.tickets__table tbody tr:hover {
+.utilisateurs__table tbody tr:hover {
 	background-color: #f0f0f0;
 }
 
 /* Rendre la table striped */
-.tickets__table tr:nth-child(odd) {
+.utilisateurs__table tr:nth-child(odd) {
 	background-color: #f5f5f5;
 }
 
@@ -118,12 +118,12 @@
 	align-items: center !important;
 }
 
-.tickets__button-create {
+.utilisateurs__button-create {
 	margin-top: 3vh;
 	margin-bottom: 3vh;
 }
 
-.tickets__back-button {
+.utilisateurs__back-button {
 	text-decoration: none;
 	color: #000;
 }
