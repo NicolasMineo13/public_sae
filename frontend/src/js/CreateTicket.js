@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../css/CreateTicket.css'; // Assurez-vous d'ajouter ce fichier CSS
 import { useAuth } from './AuthContext'; // Importez le hook useAuth
 import { useNavigate, Link } from 'react-router-dom';
@@ -14,11 +14,49 @@ function CreateTicket() {
     const [id_utilisateur_technicien, setTechnicien] = useState('');
     const [id_statut, setStatut] = useState('');
 
+    const [users, setUsers] = useState([]); // State to store the list of users
+
     const navigate = useNavigate();
 
     const { isLoggedIn } = useAuth(); // Utilisez le hook useAuth pour obtenir la fonction isLoggedIn
 
     isLoggedIn(); // Appelez la fonction isLoggedIn pour vérifier si l'utilisateur est connecté
+
+    useEffect(() => {
+        // Fetch the list of users when the component mounts
+        fetchUsers();
+    }, []);
+
+    const fetchUsers = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const refreshToken = localStorage.getItem('refreshtoken');
+            const url = 'http://localhost:5000/utilisateurs';
+
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token,
+                    'Refresh-Token': refreshToken,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Error fetching users');
+            }
+
+            const data = await response.json();
+            if (Array.isArray(data.utilisateurs)) {
+                // Set the list of users in the state
+                setUsers(data.utilisateurs);
+            } else {
+                console.error('API response does not contain user information:', data);
+            }
+        } catch (error) {
+            console.error('Error fetching users:', error);
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -87,11 +125,37 @@ function CreateTicket() {
                     </div>
                     <div className="create-ticket__form-group">
                         <label htmlFor="id_utilisateur_demandeur">Demandeur :</label>
-                        <input type="text" id="id_utilisateur_demandeur" value={id_utilisateur_demandeur} onChange={(e) => setDemandeur(e.target.value)} className="create-ticket__input" required />
+                        <select
+                            id="id_utilisateur_demandeur"
+                            value={id_utilisateur_demandeur}
+                            onChange={(e) => setDemandeur(e.target.value)}
+                            className="create-ticket__input"
+                            required
+                        >
+                            <option value="" disabled>Chosir un demandeur</option>
+                            {users.map((user) => (
+                                <option key={user._id} value={user._id}>
+                                    {`${user._prenom} ${user._nom}`}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                     <div className="create-ticket__form-group">
                         <label htmlFor="id_utilisateur_technicien">Technicien :</label>
-                        <input type="text" id="id_utilisateur_technicien" value={id_utilisateur_technicien} onChange={(e) => setTechnicien(e.target.value)} className="create-ticket__input" required />
+                        <select
+                            id="id_utilisateur_technicien"
+                            value={id_utilisateur_technicien}
+                            onChange={(e) => setTechnicien(e.target.value)}
+                            className="create-ticket__input"
+                            required
+                        >
+                            <option value="" disabled>Chosir un technicien</option>
+                            {users.map((user) => (
+                                <option key={user._id} value={user._id}>
+                                    {`${user._prenom} ${user._nom}`}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                     <div className="create-ticket__form-group">
                         <label htmlFor="id_statut">Statut :</label>

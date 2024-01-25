@@ -87,6 +87,52 @@ function Tickets() {
         }
     };
 
+    const [userNames, setUserNames] = useState({});
+
+    // Function to fetch user information by ID
+    const fetchUserNameById = async (userId) => {
+        try {
+            const token = localStorage.getItem('token');
+            const refreshToken = localStorage.getItem('refreshtoken');
+            const url = `http://localhost:5000/utilisateurs?id=${userId}`;
+
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token,
+                    'Refresh-Token': refreshToken
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Error fetching user information');
+            }
+
+            const data = await response.json();
+            if (Array.isArray(data.utilisateurs) && data.utilisateurs.length > 0) {
+                // Extract user information from the first user in the array
+                const user = data.utilisateurs[0];
+                setUserNames(prevUserNames => ({
+                    ...prevUserNames,
+                    [userId]: `${user._prenom} ${user._nom}`
+                }));
+            } else {
+                console.error('API response does not contain user information:', data);
+            }
+        } catch (error) {
+            console.error('Error fetching user information:', error);
+        }
+    };
+
+    useEffect(() => {
+        // Fetch user names for demandeurs and techniciens
+        tickets.forEach(ticket => {
+            fetchUserNameById(ticket._id_utilisateur_demandeur);
+            fetchUserNameById(ticket._id_utilisateur_technicien);
+        });
+    }, [tickets]);
+
     return (
         <div className="home__container">
             <Header />
@@ -142,8 +188,9 @@ function Tickets() {
                                 <td>{ticket._id_statut}</td>
                                 <td>{new Date(ticket._date_derniere_modif).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</td>
                                 <td>{new Date(ticket._date_creation).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</td>
-                                <td>{ticket._id_utilisateur_demandeur}</td>
-                                <td>{ticket._id_utilisateur_technicien}</td>
+                                <td>{userNames[ticket._id_utilisateur_demandeur] || 'Chargement...'}</td>
+                                <td>{userNames[ticket._id_utilisateur_technicien] || 'Chargement...'}</td>
+
                             </tr>
                         ))}
                     </tbody>

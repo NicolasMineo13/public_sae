@@ -38,13 +38,39 @@ export class TicketsSqliteDAO extends TicketsDAO {
             }
 
             if (filter.id_utilisateur_demandeur) {
-                conditions.push("id_utilisateur_demandeur = ?");
-                params.push(filter.id_utilisateur_demandeur);
+                if (filter.id_utilisateur_demandeur) {
+                    if (isNaN(parseInt(filter.id_utilisateur_demandeur, 10))) {
+                        // requete dans la base utilisateur, where nom or prenom = id_utilisateur_demandeur%
+                        let query = "SELECT id FROM utilisateurs WHERE nom LIKE '" + filter.id_utilisateur_demandeur + "%' OR prenom LIKE '" + filter.id_utilisateur_demandeur + "%'";
+                        console.log(query);
+                        let result = await db.all(query, params);
+                        if (result.length > 0) {
+                            conditions.push("id_utilisateur_demandeur = ?");
+                            params.push(result[0].id);
+                        }
+                    } else {
+                        conditions.push("id_utilisateur_demandeur = ?");
+                        params.push(filter.id_utilisateur_demandeur);
+                    }
+                }
             }
 
             if (filter.id_utilisateur_technicien) {
-                conditions.push("id_utilisateur_technicien = ?");
-                params.push(filter.id_utilisateur_technicien);
+                if (filter.id_utilisateur_technicien) {
+                    if (isNaN(parseInt(filter.id_utilisateur_technicien, 10))) {
+                        // requete dans la base utilisateur, where nom or prenom = id_utilisateur_technicien%
+                        let query = "SELECT id FROM utilisateurs WHERE nom LIKE '" + filter.id_utilisateur_technicien + "%' OR prenom LIKE '" + filter.id_utilisateur_technicien + "%'";
+                        console.log(query);
+                        let result = await db.all(query, params);
+                        if (result.length > 0) {
+                            conditions.push("id_utilisateur_technicien = ?");
+                            params.push(result[0].id);
+                        }
+                    } else {
+                        conditions.push("id_utilisateur_technicien = ?");
+                        params.push(filter.id_utilisateur_technicien);
+                    }
+                }
             }
 
             if (filter.id_statut) {

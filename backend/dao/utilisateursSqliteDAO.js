@@ -74,35 +74,35 @@ export class UtilisateursSqliteDAO extends UtilisateursDAO {
     }
 
     async logoutUtilisateur(id, token, refreshToken) {
-		const db = await this.dbPromise;
+        const db = await this.dbPromise;
 
-		let response = await db.get(
-			"SELECT token, refreshToken FROM utilisateurs WHERE id = ?",
-			id
-		);
+        let response = await db.get(
+            "SELECT token, refreshToken FROM utilisateurs WHERE id = ?",
+            id
+        );
 
         if (response.token !== token || response.refreshToken !== refreshToken) {
             return { status: false, error: "Token invalide" };
         }
 
-		if (!response || response.token === null) {
-			return { status: false, error: "Utilisateur non connecté !" };
-		}
+        if (!response || response.token === null) {
+            return { status: false, error: "Utilisateur non connecté !" };
+        }
 
-		let updateResult = await db.run("UPDATE utilisateurs SET token = NULL, refreshtoken = NULL WHERE id = ?", id);
+        let updateResult = await db.run("UPDATE utilisateurs SET token = NULL, refreshtoken = NULL WHERE id = ?", id);
 
-		if (updateResult.changes > 0) {
-			let insertResult = await db.run("INSERT INTO tokensblacklist (token) VALUES (?)", response.token);
-			let insertResultRefresh = await db.run("INSERT INTO tokensblacklist (token) VALUES (?)", response.refreshToken);
-			if (insertResult.changes > 0 && insertResultRefresh.changes > 0) {
-				return { status: true, message: "Utilisateur déconnecté avec succès." };
-			} else {
-				return { status: false, error: "Problème insert" };
-			}
-		} else {
-			return { status: false, error: "Problème update" }
-		}
-	}
+        if (updateResult.changes > 0) {
+            let insertResult = await db.run("INSERT INTO tokensblacklist (token) VALUES (?)", response.token);
+            let insertResultRefresh = await db.run("INSERT INTO tokensblacklist (token) VALUES (?)", response.refreshToken);
+            if (insertResult.changes > 0 && insertResultRefresh.changes > 0) {
+                return { status: true, message: "Utilisateur déconnecté avec succès." };
+            } else {
+                return { status: false, error: "Problème insert" };
+            }
+        } else {
+            return { status: false, error: "Problème update" }
+        }
+    }
 
     async getUtilisateurs(filter) {
         const db = await this.dbPromise;
@@ -220,12 +220,12 @@ export class UtilisateursSqliteDAO extends UtilisateursDAO {
     }
 
     async updateUtilisateur(id, updatedFields) {
-		const db = await this.dbPromise;
+        const db = await this.dbPromise;
 
-		const { nom, prenom, email, login, password, id_role } = updatedFields;
+        const { nom, prenom, email, login, password, id_role } = updatedFields;
 
-		let query = "UPDATE utilisateurs SET";
-		const params = [];
+        let query = "UPDATE utilisateurs SET";
+        const params = [];
 
         if (nom) {
             query += " nom = ?,";
@@ -242,43 +242,43 @@ export class UtilisateursSqliteDAO extends UtilisateursDAO {
             params.push(email);
         }
 
-		if (login) {
-			query += " login = ?,";
-			params.push(login);
-		}
+        if (login) {
+            query += " login = ?,";
+            params.push(login);
+        }
 
-		if (password) {
-			query += " password = ?,";
-			const saltRounds = 10;
-			const hashedPassword = await bcrypt.hash(password, saltRounds);
-			params.push(hashedPassword);
-		}
+        if (password) {
+            query += " password = ?,";
+            const saltRounds = 10;
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
+            params.push(hashedPassword);
+        }
 
         if (id_role) {
             query += " id_role = ?,";
             params.push(id_role);
         }
 
-		query = query.slice(0, -1);
-		query += " WHERE id = ?";
-		params.push(id);
+        query = query.slice(0, -1);
+        query += " WHERE id = ?";
+        params.push(id);
 
-		const result = await db.run(query, params);
+        const result = await db.run(query, params);
 
-		if (result.changes > 0) {
-			return true; // Mise à jour réussie
-		} else {
-			return false; // Aucun utilisateur mis à jour (id non trouvé)
-		}
-	}
+        if (result.changes > 0) {
+            return true; // Mise à jour réussie
+        } else {
+            return false; // Aucun utilisateur mis à jour (id non trouvé)
+        }
+    }
 
     async deleteUtilisateur(id) {
-		const db = await this.dbPromise;
-		const result = await db.run("DELETE FROM utilisateurs WHERE id = ?", id);
-		if (result.changes > 0) {
-			return true; // Suppression réussie
-		} else {
-			return false; // Aucun utilisateur supprimé (id non trouvé)
-		}
-	}
+        const db = await this.dbPromise;
+        const result = await db.run("DELETE FROM utilisateurs WHERE id = ?", id);
+        if (result.changes > 0) {
+            return true; // Suppression réussie
+        } else {
+            return false; // Aucun utilisateur supprimé (id non trouvé)
+        }
+    }
 }
