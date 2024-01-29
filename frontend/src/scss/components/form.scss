@@ -1,0 +1,19 @@
+.input-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    padding: 5px;
+    width: 100%;
+    // background-color: red;
+    label {
+        margin-bottom: 10px;
+        font-weight: 500;
+        font-size: 0.8375rem;
+    }
+    .input__text{
+        border: 1px solid $primary;
+        border-radius: 10px;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        padding: 10px;
+    }
+}
