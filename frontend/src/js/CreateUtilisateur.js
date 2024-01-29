@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import '../css/CreateUtilisateur.css'; // Assurez-vous d'ajouter ce fichier CSS
+// import '../css/CreateUtilisateur.css'; // Assurez-vous d'ajouter ce fichier CSS
+import '../scss/app.scss';
 import { useAuth } from './AuthContext'; // Importez le hook useAuth
 import { useNavigate, Link } from 'react-router-dom';
 import Header from './Header';
@@ -65,34 +66,38 @@ function CreateUtilisateur() {
     return (
         <div className="home__container">
             <Header />
-            <div className="create-utilisateur__container">
-                <Link to='/utilisateurs' className='create-utilisateur__back-button'>
-                    <FontAwesomeIcon icon={faArrowLeft} className='me-2' />
-                </Link>
-                <h1>Créer un Utilisateur</h1>
-                <form onSubmit={handleSubmit}>
-                    <div className="create-utilisateur__form-group">
-                        <label htmlFor="nom">Nom :</label>
-                        <input type="text" id="nom" value={nom} onChange={(e) => setNom(e.target.value)} className="create-utilisateur__input" required />
-                    </div>
-                    <div className="create-utilisateur__form-group">
-                        <label htmlFor="prenom">Prénom :</label>
-                        <input type="text" id="prenom" value={prenom} onChange={(e) => setPrenom(e.target.value)} className="create-utilisateur__input" required />
-                    </div>
-                    <div className="create-utilisateur__form-group">
-                        <label htmlFor="email">E-mail :</label>
-                        <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} className="create-utilisateur__input" required />
-                    </div>
-                    <div className="create-utilisateur__form-group">
-                        <label htmlFor="password">Mot de passe :</label>
-                        <input type="text" id="password" value={password} onChange={(e) => setPassword(e.target.value)} className="create-utilisateur__input" required />
-                    </div>
-                    <div className="create-utilisateur__form-group">
-                        <label htmlFor="id_role">Rôle :</label>
-                        <input type="text" id="id_role" value={id_role} onChange={(e) => setRole(e.target.value)} className="create-utilisateur__input" required />
-                    </div>
-                    <button className="create-utilisateur__button" type="submit">Créer</button>
-                </form>
+            <div className="create-utilisateur__container-page">
+                <div className='top__header-page'>
+                    <Link to="/utilisateurs" className="create-ticket__back-button">
+                        <FontAwesomeIcon icon={faArrowLeft} />
+                    </Link>
+                    <h1>Créer un utilisateur</h1>
+                </div>
+                <div className='create-utilisateur__form-container'>
+                    <form onSubmit={handleSubmit}>
+                        <div className="input-group">
+                            <label htmlFor="nom">Nom :</label>
+                            <input className="input__text" type="text" id="nom" value={nom} onChange={(e) => setNom(e.target.value)} required />
+                        </div>
+                        <div className="input-group">
+                            <label htmlFor="prenom">Prénom :</label>
+                            <input className="input__text" type="text" id="prenom" value={prenom} onChange={(e) => setPrenom(e.target.value)} required />
+                        </div>
+                        <div className="input-group">
+                            <label htmlFor="email">E-mail :</label>
+                            <input className="input__text" type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                        </div>
+                        <div className="input-group">
+                            <label htmlFor="password">Mot de passe :</label>
+                            <input className="input__text" type="text" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                        </div>
+                        <div className="input-group">
+                            <label htmlFor="id_role">Rôle :</label>
+                            <input className="input__text" type="text" id="id_role" value={id_role} onChange={(e) => setRole(e.target.value)} required />
+                        </div>
+                        <button className="input__button" type="submit">Créer</button>
+                    </form>
+                </div>
             </div>
         </div>
     );

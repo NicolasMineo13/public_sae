@@ -101,18 +101,27 @@ function Utilisateurs() {
                 </div>
                 <div className="utilisateurs__top-section-container">
                     <div className='utilisateurs__filter-container'>
-                        <select className="utilisateurs__select" value={filterField} onChange={handleFilterFieldChange}>
-                            <option value="id">ID</option>
-                            <option value="nom">Nom</option>
-                            <option value="prenom">Prénom</option>
-                            <option value="email">E-mail</option>
-                            <option value="login">Login</option>
-                            <option value="role">Rôle</option>
-                        </select>
-                        <input className="utilisateurs__input" type="text" placeholder="Valeur de filtre..." value={filterValue} onChange={handleFilterValueChange} />
-                        <button className='utilisateurs__button' onClick={handleAddFilter}>Ajouter</button>
-                        <button className='utilisateurs__button' onClick={() => setSelectedFilters([])}>Effacer les filtres</button>
-                        <button className='utilisateurs__button ms-3' onClick={fetchUtilisateurs}>Filtrer</button>
+                        <div className='input-group'>
+                            <label>Catégorie</label>
+                            <select className="utilisateurs__select" value={filterField} onChange={handleFilterFieldChange}>
+                                <option value="id">ID</option>
+                                <option value="nom">Nom</option>
+                                <option value="prenom">Prénom</option>
+                                <option value="email">E-mail</option>
+                                <option value="login">Login</option>
+                                <option value="role">Rôle</option>
+                            </select>
+                        </div>
+                        <div className='input-group'>
+                            <label>Recherche</label>
+                            <input className="input__text" type="text" placeholder="Valeur de filtre..." value={filterValue} onChange={handleFilterValueChange} />
+                        </div>
+                        <div className='input-group'>
+                            <button className='input__button' onClick={handleAddFilter}>Ajouter</button>
+                            <button className='input__button' onClick={() => setSelectedFilters([])}>Effacer les filtres</button>
+                            <button className='input__button' onClick={fetchUtilisateurs}>Filtrer</button>
+                        </div>
+                        
                         <div className="utilisateurs__selected-filters">
                             {selectedFilters.map((filter, index) => (
                                 <div key={index} className="utilisateurs__filter-item">

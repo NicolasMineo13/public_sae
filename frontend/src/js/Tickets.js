@@ -161,9 +161,9 @@ function Tickets() {
                             <option value="date_cloture">Date de clôture</option>
                         </select>
                         <input className="tickets__input" type="text" placeholder="Valeur de filtre..." value={filterValue} onChange={handleFilterValueChange} />
-                        <button className='tickets__button' onClick={handleAddFilter}>Ajouter</button>
-                        <button className='tickets__button' onClick={() => setSelectedFilters([])}>Effacer les filtres</button>
-                        <button className='tickets__button ms-3' onClick={fetchTickets}>Filtrer</button>
+                        <button className='input__button' onClick={handleAddFilter}>Ajouter</button>
+                        <button className='input__button' onClick={() => setSelectedFilters([])}>Effacer les filtres</button>
+                        <button className='input__button' onClick={fetchTickets}>Filtrer</button>
                     </div>
                 </div>
                 <div className="tickets__selected-filters">
@@ -204,8 +204,8 @@ function Tickets() {
                         </table>
                     </div>
                 </div>
-
-
+                
+                
             </div>
         </div>
     );

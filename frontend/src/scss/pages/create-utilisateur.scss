@@ -1,0 +1,24 @@
+.create-utilisateur__container-page {
+    position: absolute;
+    width: calc(100vw - 17vw);
+    height: 100%;
+    left: 17vw;
+    top: 0;
+    background-color: $background;
+    .create-utilisateur__form-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        form {
+            box-shadow: 0rem 0.3125rem 0.3125rem 0rem rgba(82, 63, 105, 0.05);
+            width: 80%;
+            background-color: white;
+            padding: 10px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-direction: column;
+        }
+    }
+}

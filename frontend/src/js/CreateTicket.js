@@ -117,15 +117,15 @@ function CreateTicket() {
                     <form onSubmit={handleSubmit}>
                         <div className="input-group">
                             <label htmlFor="titre">Titre :</label>
-                            <input type="text" id="titre" value={titre} onChange={(e) => setTitle(e.target.value)} className="create-ticket__input" required />
+                            <input  className="input__text" type="text" id="titre" value={titre} onChange={(e) => setTitle(e.target.value)} required />
                         </div>
                         <div className="input-group">
                             <label htmlFor="description">Description :</label>
-                            <textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} className="create-ticket__input" required />
+                            <textarea  className="input__text" id="description" value={description} onChange={(e) => setDescription(e.target.value)} required />
                         </div>
                         <div className="input-group">
                             <label htmlFor="date_creation">Date de Création :</label>
-                            <input type="datetime-local" id="date_creation" value={date_creation} onChange={(e) => setCreationDate(e.target.value)} className="create-ticket__input" required />
+                            <input  className="input__text" type="datetime-local" id="date_creation" value={date_creation} onChange={(e) => setCreationDate(e.target.value)} required />
                         </div>
                         <div className="input-group">
                             <label htmlFor="id_utilisateur_demandeur">Demandeur :</label>
@@ -163,12 +163,12 @@ function CreateTicket() {
                         </div>
                         <div className="input-group">
                             <label htmlFor="id_statut">Statut :</label>
-                            <input type="text" id="id_statut" value={id_statut} onChange={(e) => setStatut(e.target.value)} className="create-ticket__input" required />
+                            <input className="input__text" type="text" id="id_statut" value={id_statut} onChange={(e) => setStatut(e.target.value)} required />
                         </div>
                         <button className="input__button" type="submit">Créer</button>
                     </form>
                 </div>
-
+                
             </div>
         </div>
     );
