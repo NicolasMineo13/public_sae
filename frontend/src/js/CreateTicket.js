@@ -168,7 +168,7 @@ function CreateTicket() {
                         <button className="input__button" type="submit">Créer</button>
                     </form>
                 </div>
-                
+
             </div>
         </div>
     );

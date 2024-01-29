@@ -204,8 +204,8 @@ function Tickets() {
                         </table>
                     </div>
                 </div>
-                
-                
+
+
             </div>
         </div>
     );
