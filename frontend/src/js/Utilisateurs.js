@@ -60,6 +60,11 @@ function Utilisateurs() {
         }
     };
 
+    const openDetail = (e) => {
+        const utilisateurId = e.currentTarget.firstChild.textContent;
+        navigate(`/utilisateurs/${utilisateurId}`);
+    };
+
     useEffect(() => {
         fetchUtilisateurs();
     }, [selectedFilters]);
@@ -121,7 +126,7 @@ function Utilisateurs() {
                             <button className='input__button' onClick={() => setSelectedFilters([])}>Effacer les filtres</button>
                             <button className='input__button' onClick={fetchUtilisateurs}>Filtrer</button>
                         </div>
-                        
+
                         <div className="utilisateurs__selected-filters">
                             {selectedFilters.map((filter, index) => (
                                 <div key={index} className="utilisateurs__filter-item">
@@ -146,7 +151,7 @@ function Utilisateurs() {
                             </thead>
                             <tbody>
                                 {utilisateurs.map(utilisateur => (
-                                    <tr key={utilisateur._id}>
+                                    <tr className='pointer' key={utilisateur._id} onClick={openDetail}>
                                         <td>{utilisateur._id}</td>
                                         <td>{utilisateur._nom}</td>
                                         <td>{utilisateur._prenom}</td>

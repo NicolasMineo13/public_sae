@@ -60,6 +60,11 @@ function Tickets() {
         }
     };
 
+    const openDetail = (e) => {
+        const ticketId = e.currentTarget.firstChild.textContent;
+        navigate(`/tickets/${ticketId}`);
+    };
+
     useEffect(() => {
         fetchTickets();
     }, [selectedFilters]);
@@ -173,41 +178,44 @@ function Tickets() {
                         </div>
                     ))}
                 </div>
-                <div className='tickets__table-container'>
-                    <div className="tickets__table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Titre</th>
-                                    <th>Statut</th>
-                                    <th>Dernière modification</th>
-                                    <th>Date de création</th>
-                                    <th>Demandeur</th>
-                                    <th>Technicien</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {tickets.map(ticket => (
-                                    <tr key={ticket._id}>
-                                        <td>{ticket._id}</td>
-                                        <td>{ticket._titre}</td>
-                                        <td>{ticket._id_statut}</td>
-                                        <td>{new Date(ticket._date_derniere_modif).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</td>
-                                        <td>{new Date(ticket._date_creation).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</td>
-                                        <td>{userNames[ticket._id_utilisateur_demandeur] || 'Chargement...'}</td>
-                                        <td>{userNames[ticket._id_utilisateur_technicien] || 'Chargement...'}</td>
-
+                {tickets.length === 0 ? (
+                    <p>Pas de tickets</p>
+                ) : (
+                    <div className='tickets__table-container'>
+                        <div className="tickets__table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Titre</th>
+                                        <th>Statut</th>
+                                        <th>Dernière modification</th>
+                                        <th>Date de création</th>
+                                        <th>Demandeur</th>
+                                        <th>Technicien</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {tickets.map(ticket => (
+                                        <tr className='pointer' onClick={openDetail} key={ticket._id}>
+                                            <td>{ticket._id}</td>
+                                            <td>{ticket._titre}</td>
+                                            <td>{ticket._id_statut}</td>
+                                            <td>{new Date(ticket._date_derniere_modif).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</td>
+                                            <td>{new Date(ticket._date_creation).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</td>
+                                            <td>{userNames[ticket._id_utilisateur_demandeur] || 'Chargement...'}</td>
+                                            <td>{userNames[ticket._id_utilisateur_technicien] || 'Chargement...'}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-                
-                
+                )}
             </div>
+
         </div>
+
     );
 }
 

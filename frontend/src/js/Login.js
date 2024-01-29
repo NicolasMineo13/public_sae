@@ -35,16 +35,37 @@ function Login() {
         }
     };
 
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            // L'utilisateur a appuyé sur Entrée, appelez handleLogin
+            handleLogin();
+        }
+    };
+
     return (
         <div className="login__container">
             <h2>Connexion</h2>
             <div className="input-group">
                 <label>Login</label>
-                <input className="input__text" type="text" placeholder="Login" value={login} onChange={e => setLogin(e.target.value)} />
+                <input
+                    className="input__text"
+                    type="text"
+                    placeholder="Login"
+                    value={login}
+                    onChange={e => setLogin(e.target.value)}
+                    onKeyDown={handleKeyPress}
+                />
             </div>
             <div className="input-group">
                 <label>Mot de passe</label>
-                <input className="input__text" type="password" placeholder='Mot de passe' value={password} onChange={e => setPassword(e.target.value)} />
+                <input
+                    className="input__text"
+                    type="password"
+                    placeholder='Mot de passe'
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    onKeyDown={handleKeyPress}
+                />
             </div>
             <button className='input__button' onClick={handleLogin}>Se connecter</button>
             {loginError && <p className="login__error-message">{loginError}</p>}
