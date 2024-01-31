@@ -1,7 +1,7 @@
-import { DAOSqliteFactory } from "../factory/DAOSqliteFactory.js";
+import { DAOMysqlFactory } from "../factory/DAOMysqlFactory.js";
 
-const sqliteFactory = new DAOSqliteFactory();
-const ticketsDAO = sqliteFactory.createTicketsDAO();
+const mysqlFactory = new DAOMysqlFactory();
+const ticketsDAO = mysqlFactory.createTicketsDAO();
 
 const TicketsService = {
     getTickets: async (conditions) => {

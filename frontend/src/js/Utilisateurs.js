@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-// import '../css/Utilisateurs.css';
 import '../scss/app.scss'
 import Header from './Header';
 import { useAuth } from './AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import ticket_img from '../assets/icons/add.svg';
+import back from '../assets/icons/back.svg';
 
 function Utilisateurs() {
     const [utilisateurs, setUtilisateurs] = useState([]);
@@ -33,8 +34,6 @@ function Utilisateurs() {
                 const filterParams = selectedFilters.map(filter => `${filter.field}=${encodeURIComponent(filter.value)}`);
                 url += `?${filterParams.join('&')}`;
             }
-
-            console.log('URL de la requête:', url);
 
             const response = await fetch(url, {
                 method: 'GET',
@@ -93,22 +92,71 @@ function Utilisateurs() {
         }
     };
 
+    const [roles, setRoles] = useState({});
+
+    // Function to fetch role information by ID
+    const fetchRoleById = async (roleId) => {
+        try {
+            const token = localStorage.getItem('token');
+            const refreshToken = localStorage.getItem('refreshtoken');
+            const url = `http://localhost:5000/roles?id=${roleId}`;
+
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token,
+                    'Refresh-Token': refreshToken
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Error fetching role information');
+            }
+
+            const data = await response.json();
+            if (Array.isArray(data.roles) && data.roles.length > 0) {
+                // Extract role information from the first role in the array
+                const role = data.roles[0];
+                setRoles(prevRoles => ({
+                    ...prevRoles,
+                    [roleId]: `${role._libelle}`
+                }));
+            } else {
+                console.error('API response does not contain role information:', data);
+            }
+        } catch (error) {
+            console.error('Error fetching role information:', error);
+        }
+    };
+
+    useEffect(() => {
+        if (utilisateurs.length > 0) {
+            // Fetch role names for demandeurs and techniciens
+            utilisateurs.forEach(utilisateur => {
+                fetchRoleById(utilisateur._role);
+            });
+        }
+    }, [utilisateurs]);
+
     return (
         <div className="home__container">
             <Header />
             <div className="utilisateurs__container">
                 <div className='top__header-page'>
-                    <Link to='/home' className='utilisateurs__back-button'>
-                        <FontAwesomeIcon icon={faArrowLeft} className='me-2' />
-                    </Link>
+                    <a href="/home">
+                        <img className='back__button' src={back} />
+                    </a>
                     <h1 className='m-0'>Liste des Utilisateurs</h1>
-                    <button className='utilisateurs__button utilisateurs__button-create ms-3' onClick={handleCreateUtilisateur}>Créer un utilisateur</button>
+                    <div className='m__initial' onClick={handleCreateUtilisateur}>
+                        <img className='add__button' src={ticket_img} />
+                    </div>
                 </div>
                 <div className="utilisateurs__top-section-container">
                     <div className='utilisateurs__filter-container'>
-                        <div className='input-group'>
+                        <div className='input-group input__group__block'>
                             <label>Catégorie</label>
-                            <select className="utilisateurs__select" value={filterField} onChange={handleFilterFieldChange}>
+                            <select className="input__select" value={filterField} onChange={handleFilterFieldChange}>
                                 <option value="id">ID</option>
                                 <option value="nom">Nom</option>
                                 <option value="prenom">Prénom</option>
@@ -117,51 +165,56 @@ function Utilisateurs() {
                                 <option value="role">Rôle</option>
                             </select>
                         </div>
-                        <div className='input-group'>
+                        <div className='input-group input__group__block'>
                             <label>Recherche</label>
                             <input className="input__text" type="text" placeholder="Valeur de filtre..." value={filterValue} onChange={handleFilterValueChange} />
                         </div>
-                        <div className='input-group'>
-                            <button className='input__button' onClick={handleAddFilter}>Ajouter</button>
-                            <button className='input__button' onClick={() => setSelectedFilters([])}>Effacer les filtres</button>
-                            <button className='input__button' onClick={fetchUtilisateurs}>Filtrer</button>
-                        </div>
-
-                        <div className="utilisateurs__selected-filters">
-                            {selectedFilters.map((filter, index) => (
-                                <div key={index} className="utilisateurs__filter-item">
-                                    {filter.field}: {filter.value}
-                                </div>
-                            ))}
+                        <div className='input-group input__group__block'>
+                            <button className='input__button' onClick={handleAddFilter}>Ajouter un filtre</button>
                         </div>
                     </div>
                 </div>
+                {selectedFilters.length > 0 && (
+                <div className="utilisateurs__top-section-container">
+                    <div className="utilisateurs__filter-container j__start">
+                        {selectedFilters.map((filter, index) => (
+                            <div key={index} className="utilisateurs__filter-item">
+                                {filter.field}: {filter.value}
+                            </div>
+                        ))}
+                        <button className='input__button' onClick={() => setSelectedFilters([])}>Effacer les filtres</button>
+                    </div>
+                </div>)}
                 <div className='utilisateurs__table-container'>
                     <div className="utilisateurs__table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Nom</th>
-                                    <th>Prénom</th>
-                                    <th>E-mail</th>
-                                    <th>Login</th>
-                                    <th>Rôle</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {utilisateurs.map(utilisateur => (
-                                    <tr className='pointer' key={utilisateur._id} onClick={openDetail}>
-                                        <td>{utilisateur._id}</td>
-                                        <td>{utilisateur._nom}</td>
-                                        <td>{utilisateur._prenom}</td>
-                                        <td>{utilisateur._email}</td>
-                                        <td>{utilisateur._login}</td>
-                                        <td>{utilisateur._role}</td>
+                        {utilisateurs.length === 0 ? (
+                            <p className='t__center'>Pas d'utilisateur</p>
+                        ) : (
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nom</th>
+                                        <th>Prénom</th>
+                                        <th>E-mail</th>
+                                        <th>Login</th>
+                                        <th>Rôle</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {utilisateurs.map(utilisateur => (
+                                        <tr className='pointer' key={utilisateur._id} onClick={openDetail}>
+                                            <td>{utilisateur._id}</td>
+                                            <td>{utilisateur._nom}</td>
+                                            <td>{utilisateur._prenom}</td>
+                                            <td>{utilisateur._email}</td>
+                                            <td>{utilisateur._login}</td>
+                                            <td>{roles[utilisateur._role] || 'Chargement...'}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        )}
                     </div>
                 </div>
             </div>

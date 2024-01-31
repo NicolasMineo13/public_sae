@@ -6,6 +6,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import Header from './Header';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import home from '../assets/icons/home.svg'
+import back from '../assets/icons/back.svg'
 
 function CreateTicket() {
     const [titre, setTitle] = useState('');
@@ -16,6 +18,7 @@ function CreateTicket() {
     const [id_statut, setStatut] = useState('');
 
     const [users, setUsers] = useState([]); // State to store the list of users
+    const [statuts, setStatuts] = useState([]); // State to store the list of users
 
     const navigate = useNavigate();
 
@@ -25,6 +28,7 @@ function CreateTicket() {
 
     useEffect(() => {
         // Fetch the list of users when the component mounts
+        fetchStatuts();
         fetchUsers();
     }, []);
 
@@ -56,6 +60,37 @@ function CreateTicket() {
             }
         } catch (error) {
             console.error('Error fetching users:', error);
+        }
+    };
+
+    const fetchStatuts = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const refreshToken = localStorage.getItem("refreshtoken");
+            const url = "http://localhost:5000/statuts";
+
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token,
+                    "Refresh-Token": refreshToken,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Error fetching users");
+            }
+
+            const data = await response.json();
+            if (Array.isArray(data.statuts)) {
+                // Set the list of users in the state
+                setStatuts(data.statuts);
+            } else {
+                console.error("API response does not contain user information:", data);
+            }
+        } catch (error) {
+            console.error("Error fetching users:", error);
         }
     };
 
@@ -108,24 +143,27 @@ function CreateTicket() {
             <Header />
             <div className="create-ticket__container-page">
                 <div className='top__header-page'>
-                    <Link to="/tickets" className="create-ticket__back-button">
-                        <FontAwesomeIcon icon={faArrowLeft} />
-                    </Link>
+                    <a href="/tickets">
+                        <img className='back__button' src={back} />
+                    </a>
                     <h1>Créer un Ticket</h1>
+                    <a className='m__initial' href="/home">
+                        <img className='home__button' src={home}/>
+                    </a>
                 </div>
                 <div className='create-ticket__form-container'>
                     <form onSubmit={handleSubmit}>
                         <div className="input-group">
                             <label htmlFor="titre">Titre :</label>
-                            <input  className="input__text" type="text" id="titre" value={titre} onChange={(e) => setTitle(e.target.value)} required />
+                            <input className="input__text" type="text" id="titre" placeholder='Titre...' value={titre} onChange={(e) => setTitle(e.target.value)} required />
                         </div>
                         <div className="input-group">
                             <label htmlFor="description">Description :</label>
-                            <textarea  className="input__text" id="description" value={description} onChange={(e) => setDescription(e.target.value)} required />
+                            <textarea className="input__text" id="description" placeholder='Description...' value={description} onChange={(e) => setDescription(e.target.value)} required />
                         </div>
                         <div className="input-group">
                             <label htmlFor="date_creation">Date de Création :</label>
-                            <input  className="input__text" type="datetime-local" id="date_creation" value={date_creation} onChange={(e) => setCreationDate(e.target.value)} required />
+                            <input className="input__text" type="datetime-local" id="date_creation" value={date_creation} onChange={(e) => setCreationDate(e.target.value)} required />
                         </div>
                         <div className="input-group">
                             <label htmlFor="id_utilisateur_demandeur">Demandeur :</label>
@@ -133,7 +171,7 @@ function CreateTicket() {
                                 id="id_utilisateur_demandeur"
                                 value={id_utilisateur_demandeur}
                                 onChange={(e) => setDemandeur(e.target.value)}
-                                className="create-ticket__input"
+                                className="input__select"
                                 required
                             >
                                 <option value="" disabled>Chosir un demandeur</option>
@@ -150,7 +188,7 @@ function CreateTicket() {
                                 id="id_utilisateur_technicien"
                                 value={id_utilisateur_technicien}
                                 onChange={(e) => setTechnicien(e.target.value)}
-                                className="create-ticket__input"
+                                className="input__select"
                                 required
                             >
                                 <option value="" disabled>Chosir un technicien</option>
@@ -163,12 +201,25 @@ function CreateTicket() {
                         </div>
                         <div className="input-group">
                             <label htmlFor="id_statut">Statut :</label>
-                            <input className="input__text" type="text" id="id_statut" value={id_statut} onChange={(e) => setStatut(e.target.value)} required />
+                            <select
+                                id="id_statut"
+                                value={id_statut}
+                                onChange={(e) => setStatut(e.target.value)}
+                                className="input__select"
+                                required
+                            >
+                                <option value="" disabled>Chosir un statut</option>
+                                {statuts.map((statut) => (
+                                    <option key={statut._id} value={statut._id}>
+                                        {`${statut._libelle}`}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                         <button className="input__button" type="submit">Créer</button>
                     </form>
                 </div>
-                
+
             </div>
         </div>
     );

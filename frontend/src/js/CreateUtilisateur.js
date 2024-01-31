@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // import '../css/CreateUtilisateur.css'; // Assurez-vous d'ajouter ce fichier CSS
 import '../scss/app.scss';
 import { useAuth } from './AuthContext'; // Importez le hook useAuth
@@ -6,6 +6,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import Header from './Header';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import home from '../assets/icons/home.svg';
+import back from '../assets/icons/back.svg'
 
 function CreateUtilisateur() {
     const [nom, setNom] = useState('');
@@ -16,9 +18,47 @@ function CreateUtilisateur() {
 
     const navigate = useNavigate();
 
+    const [roles, setRoles] = useState([]); // State to store the list of roles
+
     const { isLoggedIn } = useAuth(); // Utilisez le hook useAuth pour obtenir la fonction isLoggedIn
 
     isLoggedIn(); // Appelez la fonction isLoggedIn pour vérifier si l'utilisateur est connecté
+
+    useEffect(() => {
+        // Fetch the list of roles when the component mounts
+        fetchRoles();
+    }, []);
+
+    const fetchRoles = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const refreshToken = localStorage.getItem("refreshtoken");
+            const url = "http://localhost:5000/roles";
+
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token,
+                    "Refresh-Token": refreshToken,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Error fetching roles");
+            }
+
+            const data = await response.json();
+            if (Array.isArray(data.roles)) {
+                // Set the list of roles in the state
+                setRoles(data.roles);
+            } else {
+                console.error("API response does not contain role information:", data);
+            }
+        } catch (error) {
+            console.error("Error fetching roles:", error);
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -68,32 +108,48 @@ function CreateUtilisateur() {
             <Header />
             <div className="create-utilisateur__container-page">
                 <div className='top__header-page'>
-                    <Link to="/utilisateurs" className="create-ticket__back-button">
-                        <FontAwesomeIcon icon={faArrowLeft} />
-                    </Link>
+                    <a href="/utilisateurs">
+                        <img className='back__button' src={back} />
+                    </a>
                     <h1>Créer un utilisateur</h1>
+                    <a className='m__initial' href="/home">
+                        <img className='home__button' src={home}/>
+                    </a>
                 </div>
                 <div className='create-utilisateur__form-container'>
                     <form onSubmit={handleSubmit}>
                         <div className="input-group">
                             <label htmlFor="nom">Nom :</label>
-                            <input className="input__text" type="text" id="nom" value={nom} onChange={(e) => setNom(e.target.value)} required />
+                            <input className="input__text" type="text" id="nom" placeholder='Nom...' value={nom} onChange={(e) => setNom(e.target.value)} required />
                         </div>
                         <div className="input-group">
                             <label htmlFor="prenom">Prénom :</label>
-                            <input className="input__text" type="text" id="prenom" value={prenom} onChange={(e) => setPrenom(e.target.value)} required />
+                            <input className="input__text" type="text" id="prenom" placeholder='Prénom...' value={prenom} onChange={(e) => setPrenom(e.target.value)} required />
                         </div>
                         <div className="input-group">
                             <label htmlFor="email">E-mail :</label>
-                            <input className="input__text" type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                            <input className="input__text" type="email" id="email" placeholder='E-mail...' value={email} onChange={(e) => setEmail(e.target.value)} required />
                         </div>
                         <div className="input-group">
                             <label htmlFor="password">Mot de passe :</label>
-                            <input className="input__text" type="text" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                            <input className="input__text" type="password" id="password" placeholder='Mot de passe...' value={password} onChange={(e) => setPassword(e.target.value)} required />
                         </div>
                         <div className="input-group">
                             <label htmlFor="id_role">Rôle :</label>
-                            <input className="input__text" type="text" id="id_role" value={id_role} onChange={(e) => setRole(e.target.value)} required />
+                            <select
+                                id="id_role"
+                                value={id_role}
+                                onChange={(e) => setRole(e.target.value)}
+                                className="input__select"
+                                required
+                            >
+                                <option value="" disabled>Chosir un rôle</option>
+                                {roles.map((role) => (
+                                    <option key={role._id} value={role._id}>
+                                        {`${role._libelle}`}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                         <button className="input__button" type="submit">Créer</button>
                     </form>

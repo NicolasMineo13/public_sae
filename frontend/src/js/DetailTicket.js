@@ -6,6 +6,8 @@ import { useNavigate, Link, useParams } from "react-router-dom";
 import Header from "./Header";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import home from '../assets/icons/home.svg';
+import back from '../assets/icons/back.svg';
 
 function DetailTicket() {
     const [titre, setTitle] = useState('');
@@ -23,6 +25,7 @@ function DetailTicket() {
     const [update_id_statut, update_setStatut] = useState('');
 
     const [users, setUsers] = useState([]); // State to store the list of users
+    const [statuts, setStatuts] = useState([]); // State to store the list of users
 
     const navigate = useNavigate();
 
@@ -33,6 +36,7 @@ function DetailTicket() {
     useEffect(() => {
         // Fetch the list of users when the component mounts
         fetchUsers();
+        fetchStatuts();
         fetchTicket();
     }, []);
 
@@ -72,7 +76,6 @@ function DetailTicket() {
 
             // Ajoutez les paramètres de requête à l'URL
             const patchUrl = `http://localhost:5000/tickets/${id}?${queryParams.toString()}`;
-            console.log("URL de la requête PATCH :", patchUrl);
 
             // Obtenez le jeton d'accès et le jeton de rafraîchissement du stockage local
             const token = localStorage.getItem('token');
@@ -155,6 +158,37 @@ function DetailTicket() {
         }
     };
 
+    const fetchStatuts = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const refreshToken = localStorage.getItem("refreshtoken");
+            const url = "http://localhost:5000/statuts";
+
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token,
+                    "Refresh-Token": refreshToken,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Error fetching users");
+            }
+
+            const data = await response.json();
+            if (Array.isArray(data.statuts)) {
+                // Set the list of users in the state
+                setStatuts(data.statuts);
+            } else {
+                console.error("API response does not contain user information:", data);
+            }
+        } catch (error) {
+            console.error("Error fetching users:", error);
+        }
+    };
+
     const fetchTicket = async () => {
         try {
             const token = localStorage.getItem("token");
@@ -206,10 +240,13 @@ function DetailTicket() {
             <Header />
             <div className="create-ticket__container-page">
                 <div className="top__header-page">
-                    <Link to="/tickets" className="create-ticket__back-button">
-                        <FontAwesomeIcon icon={faArrowLeft} />
-                    </Link>
+                    <a href="/tickets">
+                        <img className='back__button' src={back} />
+                    </a>
                     <h1>Affichage du ticket N°{id} - {update_titre}</h1>
+                    <a className='m__initial' href="/home">
+                        <img className='home__button' src={home}/>
+                    </a>
                 </div>
                 <div className="create-ticket__form-container">
                     <form onSubmit={handleUpdate}>
@@ -238,7 +275,7 @@ function DetailTicket() {
                                 className="input__text"
                                 type="datetime-local"
                                 id="date_creation"
-                                value={update_date_creation}
+                                value={update_date_creation ? update_date_creation.slice(0, 16) : ""}
                                 onChange={(e) => update_setCreationDate(e.target.value)}
                             />
                         </div>
@@ -246,7 +283,7 @@ function DetailTicket() {
                             <label htmlFor="id_utilisateur_demandeur">Demandeur :</label>
                             <select
                                 id="id_utilisateur_demandeur"
-                                className="create-ticket__input"
+                                className="input__select"
                                 value={update_id_utilisateur_demandeur}
                                 onChange={(e) => update_setDemandeur(e.target.value)}
                             >
@@ -267,7 +304,7 @@ function DetailTicket() {
                             <label htmlFor="id_utilisateur_technicien">Technicien :</label>
                             <select
                                 id="id_utilisateur_technicien"
-                                className="create-ticket__input"
+                                className="input__select"
                                 value={update_id_utilisateur_technicien}
                                 onChange={(e) => update_setTechnicien(e.target.value)}
                             >
@@ -286,15 +323,26 @@ function DetailTicket() {
                         </div>
                         <div className="input-group">
                             <label htmlFor="id_statut">Statut :</label>
-                            <input
-                                className="input__text"
-                                type="text"
+                            <select
                                 id="id_statut"
+                                className="input__select"
                                 value={update_id_statut}
                                 onChange={(e) => update_setStatut(e.target.value)}
-                            />
+                            >
+                                <option value="" disabled>
+                                    Chosir un statut
+                                </option>
+                                {statuts.map((statut) => (
+                                    <option
+                                        key={statut._id}
+                                        value={statut._id}
+                                    >
+                                        {`${statut._libelle}`}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
-                        <div className="input-group">
+                        <div className="input-group d__flex  w__30">
                             <button className="input__button" type="submit">
                                 Modifier
                             </button>

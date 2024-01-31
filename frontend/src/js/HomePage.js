@@ -1,5 +1,4 @@
 import React from 'react';
-import '../css/HomePage.css'; // Assurez-vous d'ajouter ce fichier CSS
 import { useAuth } from './AuthContext'; // Importez le hook useAuth
 import Header from './Header'; // Importez le composant Header
 

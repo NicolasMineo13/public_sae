@@ -1,7 +1,7 @@
-import { DAOSqliteFactory } from "../factory/DAOSqliteFactory.js";
+import { DAOMysqlFactory } from "../factory/DAOMysqlFactory.js";
 
-const sqliteFactory = new DAOSqliteFactory();
-const utilisateursDAO = sqliteFactory.createUtilisateursDAO();
+const mysqlFactory = new DAOMysqlFactory();
+const utilisateursDAO = mysqlFactory.createUtilisateursDAO();
 
 const UtilisateursService = {
     getUtilisateurs: async (conditions) => {

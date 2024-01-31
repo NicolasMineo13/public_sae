@@ -6,6 +6,8 @@ import { useNavigate, Link, useParams } from "react-router-dom";
 import Header from "./Header";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import home from '../assets/icons/home.svg';
+import back from '../assets/icons/back.svg';
 
 function DetailUtilisateur() {
     const [nom, setNom] = useState('');
@@ -22,7 +24,7 @@ function DetailUtilisateur() {
     const [update_role, update_setRole] = useState('');
     const [update_password, update_setPassword] = useState('');
 
-    const [users, setUsers] = useState([]); // State to store the list of users
+    const [roles, setRoles] = useState([]); // State to store the list of roles
 
     const navigate = useNavigate();
 
@@ -32,7 +34,7 @@ function DetailUtilisateur() {
 
     useEffect(() => {
         // Fetch the list of users when the component mounts
-        // fetchRoles();
+        fetchRoles();
         fetchUtilisateur();
     }, []);
 
@@ -58,7 +60,7 @@ function DetailUtilisateur() {
             updatedFields.login = update_login;
         }
         if (role !== update_role) {
-            updatedFields.role = update_role;
+            updatedFields.id_role = update_role;
         }
         if (password !== update_password) {
             updatedFields.password = update_password;
@@ -72,7 +74,6 @@ function DetailUtilisateur() {
 
             // Ajoutez les paramètres de requête à l'URL
             const patchUrl = `http://localhost:5000/utilisateurs/${id}?${queryParams.toString()}`;
-            console.log("URL de la requête PATCH :", patchUrl);
 
             // Obtenez le jeton d'accès et le jeton de rafraîchissement du stockage local
             const token = localStorage.getItem('token');
@@ -124,36 +125,36 @@ function DetailUtilisateur() {
         }
     };
 
-    // const fetchRoles = async () => {
-    //     try {
-    //         const token = localStorage.getItem("token");
-    //         const refreshToken = localStorage.getItem("refreshtoken");
-    //         const url = "http://localhost:5000/utilisateurs";
+    const fetchRoles = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const refreshToken = localStorage.getItem("refreshtoken");
+            const url = "http://localhost:5000/roles";
 
-    //         const response = await fetch(url, {
-    //             method: "GET",
-    //             headers: {
-    //                 "Content-Type": "application/json",
-    //                 Authorization: token,
-    //                 "Refresh-Token": refreshToken,
-    //             },
-    //         });
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token,
+                    "Refresh-Token": refreshToken,
+                },
+            });
 
-    //         if (!response.ok) {
-    //             throw new Error("Error fetching users");
-    //         }
+            if (!response.ok) {
+                throw new Error("Error fetching users");
+            }
 
-    //         const data = await response.json();
-    //         if (Array.isArray(data.utilisateurs)) {
-    //             // Set the list of users in the state
-    //             setUsers(data.utilisateurs);
-    //         } else {
-    //             console.error("API response does not contain user information:", data);
-    //         }
-    //     } catch (error) {
-    //         console.error("Error fetching users:", error);
-    //     }
-    // };
+            const data = await response.json();
+            if (Array.isArray(data.roles)) {
+                // Set the list of users in the state
+                setRoles(data.roles);
+            } else {
+                console.error("API response does not contain user information:", data);
+            }
+        } catch (error) {
+            console.error("Error fetching users:", error);
+        }
+    };
 
     const fetchUtilisateur = async () => {
         try {
@@ -207,10 +208,13 @@ function DetailUtilisateur() {
             <Header />
             <div className="create-utilisateur__container-page">
                 <div className="top__header-page">
-                    <Link to="/utilisateurs" className="create-utilisateur__back-button">
-                        <FontAwesomeIcon icon={faArrowLeft} />
-                    </Link>
+                    <a href="/utilisateurs">
+                        <img className='back__button' src={back} />
+                    </a>
                     <h1>Affichage de l'utilisateur N°{id} - {update_login}</h1>
+                    <a className='m__initial' href="/home">
+                        <img className='home__button' src={home}/>
+                    </a>
                 </div>
                 <div className="create-utilisateur__form-container">
                     <form onSubmit={handleUpdate}>
@@ -257,19 +261,19 @@ function DetailUtilisateur() {
                             <label htmlFor="role">Rôle :</label>
                             <select
                                 id="role"
-                                className="create-utilisateur__input"
+                                className="input__select"
                                 value={update_role}
                                 onChange={(e) => update_setRole(e.target.value)}
                             >
                                 <option value="" disabled>
                                     Chosir un rôle
                                 </option>
-                                {users.map((user) => (
+                                {roles.map((role) => (
                                     <option
-                                        key={user._id}
-                                        value={user._id}
+                                        key={role._id}
+                                        value={role._id}
                                     >
-                                        {`${user._prenom} ${user._nom}`}
+                                        {`${role._libelle}`}
                                     </option>
                                 ))}
                             </select>
@@ -285,7 +289,7 @@ function DetailUtilisateur() {
                                 onChange={(e) => update_setPassword(e.target.value)}
                             />
                         </div>
-                        <div className="input-group">
+                        <div className="input-group d__flex  w__30">
                             <button className="input__button" type="submit">
                                 Modifier
                             </button>

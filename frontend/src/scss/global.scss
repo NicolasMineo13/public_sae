@@ -2,7 +2,7 @@
 
 body {
 	width: 100vw;
-	font-family: Poppins;
+	font-family: $police;
 }
 
 .top__header-page {
@@ -15,6 +15,33 @@ body {
 	height: 30px;
 }
 
+.add__button, .home__button, .back__button {
+	filter: $primary_svg;
+	cursor: pointer;
+}
+
 .pointer {
 	cursor: pointer;
+}
+
+.m__initial {
+	margin:initial!important;
+}
+
+.j__start {
+	justify-content: start!important;
+}
+
+.t__center {
+	text-align: center;
+}
+
+.d__flex {
+	display: flex!important;
+	flex-direction: row!important;
+	align-items: center!important;
+}
+
+.w__30 {
+	width: 30%!important;
 }
