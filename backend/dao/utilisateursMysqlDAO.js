@@ -105,6 +105,7 @@ export class UtilisateursMysqlDAO extends UtilisateursDAO {
                     const [insertResultRefresh] = await db.execute("INSERT INTO tokensblacklist (token) VALUES (?)", [userRefreshToken]);
 
                     if (insertResult && insertResult.affectedRows > 0 && insertResultRefresh && insertResultRefresh.affectedRows > 0) {
+                        // db.end();
                         return { status: true, message: "Utilisateur déconnecté avec succès." };
                     } else {
                         return { status: false, error: "Problème insert" };
@@ -160,8 +161,21 @@ export class UtilisateursMysqlDAO extends UtilisateursDAO {
             }
 
             if (filter.id_role) {
-                conditions.push("id_role = ?");
-                params.push(filter.id_role);
+                if (!isNaN(parseInt(filter.id_role, 10))) {
+                    conditions.push("id_role = ?");
+                    params.push(filter.id_role);
+                } else {
+                    // Recherche d'ID d'utilisateur par libellé
+                    const searchTerm = `%${filter.id_role}%`;
+                    const [result] = await db.execute(
+                        "SELECT id FROM roles WHERE libelle LIKE ?",
+                        [searchTerm]
+                    );
+                    if (result && result.length > 0) {
+                        conditions.push("id_role = ?");
+                        params.push(result[0].id);
+                    }
+                }
             }
 
             if (filter.token) {
@@ -203,7 +217,7 @@ export class UtilisateursMysqlDAO extends UtilisateursDAO {
                 throw new Error("Email invalide");
             }
 
-            const login = nom.toUpperCase() + prenom[0].toUpperCase();
+            let login = nom.toUpperCase() + prenom[0].toUpperCase();
 
             const saltRounds = 10;
             const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -213,7 +227,7 @@ export class UtilisateursMysqlDAO extends UtilisateursDAO {
                 [email]
             );
 
-            const [utilisateur] = await db.execute(
+            let [utilisateur] = await db.execute(
                 "SELECT id FROM utilisateurs WHERE login = ?",
                 [login]
             );
@@ -222,11 +236,21 @@ export class UtilisateursMysqlDAO extends UtilisateursDAO {
                 return new Error("Un compte existe déjà avec cet email !");
             }
 
+            let cpt = 0;
+            let newLogin = login;
+
             if (utilisateur.length > 0) {
-                return new Error("Un compte existe déjà avec ce login!");
+                do {
+                    newLogin = login + cpt;
+                    [utilisateur] = await db.execute(
+                        "SELECT id FROM utilisateurs WHERE login = ?",
+                        [newLogin]
+                    );
+                    cpt++;
+                } while (utilisateur.length > 0);
             }
 
-            console.log(nom, prenom, email, login, hashedPassword, id_role);
+            login = newLogin;
 
             const [result] = await db.execute(
                 "INSERT INTO utilisateurs (nom, prenom, email, login, password, id_role) VALUES (?, ?, ?, ?, ?, ?)",

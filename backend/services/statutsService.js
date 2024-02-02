@@ -8,8 +8,8 @@ const StatutsService = {
         return await statutsDAO.getStatuts(conditions);
     },
 
-    createStatut: async (libelle) => {
-        return await statutsDAO.createStatut(libelle);
+    createStatut: async (libelle, couleur) => {
+        return await statutsDAO.createStatut(libelle, couleur);
     },
 
     updateStatut: async (id, updatedFields) => {

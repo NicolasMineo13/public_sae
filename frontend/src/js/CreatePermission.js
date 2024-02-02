@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import '../scss/app.scss'
-import { useAuth } from './AuthContext'; // Importez le hook useAuth
-import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from './AuthContext';
+import { useNavigate } from 'react-router-dom';
 import Header from './Header';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import back from '../assets/icons/back.svg';
+import home from '../assets/icons/home.svg';
 
 function CreatePermission() {
     const [libelle, setLibelle] = useState('');
@@ -55,14 +55,17 @@ function CreatePermission() {
     };
 
     return (
-        <div className="home__container">
+        <div className="container-page">
             <Header />
             <div className="create-ticket__container-page">
                 <div className='top__header-page'>
-                    <Link to="/permissions" className="create-ticket__back-button">
-                        <FontAwesomeIcon icon={faArrowLeft} />
-                    </Link>
+                    <a href="/permissions">
+                        <img className='back__button' src={back} />
+                    </a>
                     <h1>Créer un Permission</h1>
+                    <a className='m__initial' href="/home">
+                        <img className='home__button' src={home} />
+                    </a>
                 </div>
                 <div className='create-ticket__form-container'>
                     <form onSubmit={handleSubmit}>

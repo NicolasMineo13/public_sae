@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../scss/app.scss'
 import Header from './Header';
 import { useAuth } from './AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 import ticket_img from '../assets/icons/add.svg'
 import back from '../assets/icons/back.svg'
 
@@ -24,11 +22,17 @@ function Tickets() {
 
     isLoggedIn();
 
-    const fetchTickets = async () => {
+    const fetchTickets = async (sort_column) => {
         try {
             const token = localStorage.getItem('token');
             const refreshToken = localStorage.getItem('refreshtoken');
             let url = 'http://localhost:5000/tickets';
+
+            if (sort_column) {
+                url += `?sort=${sort_column}`;
+            }
+
+            console.log(url);
 
             if (selectedFilters.length > 0) {
                 const filterParams = selectedFilters.map(filter => `${filter.field}=${encodeURIComponent(filter.value)}`);
@@ -59,14 +63,22 @@ function Tickets() {
         }
     };
 
-    const openDetail = (e) => {
-        const ticketId = e.currentTarget.firstChild.textContent;
-        navigate(`/tickets/${ticketId}`);
-    };
+    const [isLoading, setIsLoading] = useState(true); // Nouvel état pour le chargement
+
+    useEffect(() => {
+        fetchTickets()
+            .then(() => setIsLoading(false)) // Marquer le chargement comme terminé
+            .catch(() => setIsLoading(false)); // Gérer les erreurs et marquer le chargement comme terminé
+    }, []);
 
     useEffect(() => {
         fetchTickets();
     }, [selectedFilters]);
+
+    const openDetail = (e) => {
+        const ticketId = e.currentTarget.firstChild.textContent;
+        navigate(`/tickets/${ticketId}`);
+    };
 
     const handleFilterFieldChange = (e) => {
         setFilterField(e.target.value);
@@ -123,7 +135,11 @@ function Tickets() {
                     [userId]: `${user._prenom} ${user._nom}`
                 }));
             } else {
-                console.error('API response does not contain user information:', data);
+                // console.error('API response does not contain user information:', data);
+                setUserNames(prevUserNames => ({
+                    ...prevUserNames,
+                    [userId]: 'Non assigné'
+                }));
             }
         } catch (error) {
             console.error('Error fetching user information:', error);
@@ -141,6 +157,7 @@ function Tickets() {
     }, [tickets]);
 
     const [statut, setStatuts] = useState({});
+    const [statut_color, setStatutColor] = useState({});
 
     // Function to fetch statut by ID
     const fetchStatutById = async (statutId) => {
@@ -170,6 +187,10 @@ function Tickets() {
                     ...prevStatuts,
                     [statutId]: `${statut._libelle}`
                 }));
+                setStatutColor(prevStatuts => ({
+                    ...prevStatuts,
+                    [statutId]: `${statut._couleur}`
+                }));
             } else {
                 console.error('API response does not contain statut information:', data);
             }
@@ -187,8 +208,28 @@ function Tickets() {
         }
     }, [tickets]);
 
+    function hexToRgb(hex, alpha) {
+        if (!hex || hex === '#null') {
+            return ''; // Retourne une chaîne vide si la couleur est null ou non définie
+        }
+
+        hex = hex.startsWith('#') ? hex.slice(1) : hex; // Supprime le '#' s'il est présent
+
+        const r = parseInt(hex.slice(0, 2), 16);
+        const g = parseInt(hex.slice(2, 4), 16);
+        const b = parseInt(hex.slice(4, 6), 16);
+
+        return `rgba(${r},${g},${b},${alpha})`;
+    }
+
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            handleAddFilter();
+        }
+    };
+
     return (
-        <div className="home__container">
+        <div className="container-page">
             <Header />
             <div className="tickets__container-page">
                 <div className='top__header-page'>
@@ -217,8 +258,23 @@ function Tickets() {
                             </select>
                         </div>
                         <div className='input-group input__group__block'>
+                            <button
+                                className='input__button'
+                                onClick={() => fetchTickets(filterField)}
+                            >
+                                Trier par
+                            </button>
+                        </div>
+                        <div className='input-group input__group__block'>
                             <label>Recherche</label>
-                            <input className="input__text" type="text" placeholder="Valeur de filtre..." value={filterValue} onChange={handleFilterValueChange} />
+                            <input
+                                className="input__text"
+                                type="text"
+                                placeholder="Valeur de filtre..."
+                                value={filterValue}
+                                onChange={handleFilterValueChange}
+                                onKeyDown={handleKeyPress}
+                            />
                         </div>
                         <div className='input-group input__group__block'>
                             <button className='input__button' onClick={handleAddFilter}>Ajouter un filtre</button>
@@ -226,19 +282,21 @@ function Tickets() {
                     </div>
                 </div>
                 {selectedFilters.length > 0 && (
-                <div className="tickets__top-section-container">
-                    <div className="tickets__filter-container j__start">
-                        {selectedFilters.map((filter, index) => (
-                            <div key={index} className="tickets__filter-item">
-                                <span>{filter.field}: {filter.value}</span>
-                            </div>
-                        ))}
-                        <button className='input__button m__initial' onClick={() => setSelectedFilters([])}>Effacer les filtres</button>
-                    </div>
-                </div>)}
+                    <div className="tickets__top-section-container">
+                        <div className="tickets__filter-container j__start">
+                            {selectedFilters.map((filter, index) => (
+                                <div key={index} className="tickets__filter-item">
+                                    <span>{filter.field}: {filter.value}</span>
+                                </div>
+                            ))}
+                            <button className='input__button m__initial' onClick={() => setSelectedFilters([])}>Effacer les filtres</button>
+                        </div>
+                    </div>)}
                 <div className='tickets__table-container'>
                     <div className="tickets__table">
-                        {tickets.length === 0 ? (
+                        {isLoading ? ( // Vérifier si le chargement est en cours
+                            <p className='t__center'>Chargement des tickets...</p>
+                        ) : tickets.length === 0 ? ( // Vérifier si la liste est vide
                             <p className='t__center'>Pas de tickets</p>
                         ) : (
                             <table>
@@ -255,12 +313,18 @@ function Tickets() {
                                 </thead>
                                 <tbody>
                                     {tickets.map(ticket => (
-                                        <tr className='pointer' onClick={openDetail} key={ticket._id}>
+                                        <tr
+                                            className='pointer'
+                                            onClick={openDetail}
+                                            key={ticket._id}
+                                            // Copier la ligne dessous pour faire des pastilles de couleur
+                                            style={statut_color[ticket._id_statut] !== null ? { backgroundColor: hexToRgb(statut_color[ticket._id_statut], 0.5) } : {}}
+                                        >
                                             <td>{ticket._id}</td>
                                             <td>{ticket._titre}</td>
                                             <td>{statut[ticket._id_statut] || 'Chargement...'}</td>
-                                            <td>{new Date(ticket._date_derniere_modif).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</td>
-                                            <td>{new Date(ticket._date_creation).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</td>
+                                            <td>{new Date(ticket._date_derniere_modif).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
+                                            <td>{new Date(ticket._date_creation).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
                                             <td>{userNames[ticket._id_utilisateur_demandeur] || 'Chargement...'}</td>
                                             <td>{userNames[ticket._id_utilisateur_technicien] || 'Chargement...'}</td>
                                         </tr>

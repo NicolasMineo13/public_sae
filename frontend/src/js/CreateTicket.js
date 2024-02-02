@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from 'react';
-// import '../css/CreateTicket.css'; // Assurez-vous d'ajouter ce fichier CSS
 import '../scss/app.scss'
-import { useAuth } from './AuthContext'; // Importez le hook useAuth
-import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from './AuthContext';
+import { useNavigate } from 'react-router-dom';
+import moment from 'moment-timezone';
 import Header from './Header';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import home from '../assets/icons/home.svg'
 import back from '../assets/icons/back.svg'
 
 function CreateTicket() {
     const [titre, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [date_creation, setCreationDate] = useState('');
-    const [id_utilisateur_demandeur, setDemandeur] = useState('');
+    let [date_creation, setCreationDate] = useState('');
+    let [id_utilisateur_demandeur, setDemandeur] = useState('');
     const [id_utilisateur_technicien, setTechnicien] = useState('');
-    const [id_statut, setStatut] = useState('');
+    let [id_statut, setStatut] = useState('');
+
+    date_creation = moment().tz('Europe/Paris').format('YYYY-MM-DD HH:mm');
+    id_statut = '1';
+    const id = localStorage.getItem('id');
+    id_utilisateur_demandeur = id;
 
     const [users, setUsers] = useState([]); // State to store the list of users
     const [statuts, setStatuts] = useState([]); // State to store the list of users
@@ -84,8 +87,8 @@ function CreateTicket() {
 
             const data = await response.json();
             if (Array.isArray(data.statuts)) {
-                // Set the list of users in the state
-                setStatuts(data.statuts);
+                const filteredStatuts = data.statuts.filter(statut => statut._libelle !== "Clôturé");
+                setStatuts(filteredStatuts);
             } else {
                 console.error("API response does not contain user information:", data);
             }
@@ -117,6 +120,8 @@ function CreateTicket() {
             // Créez l'URL de la requête en ajoutant les paramètres de requête
             const url = `http://localhost:5000/tickets?${queryParams.toString()}`;
 
+            console.log("URL : " + url);
+
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -139,7 +144,7 @@ function CreateTicket() {
     };
 
     return (
-        <div className="home__container">
+        <div className="container-page">
             <Header />
             <div className="create-ticket__container-page">
                 <div className='top__header-page'>
@@ -148,7 +153,7 @@ function CreateTicket() {
                     </a>
                     <h1>Créer un Ticket</h1>
                     <a className='m__initial' href="/home">
-                        <img className='home__button' src={home}/>
+                        <img className='home__button' src={home} />
                     </a>
                 </div>
                 <div className='create-ticket__form-container'>
@@ -163,7 +168,14 @@ function CreateTicket() {
                         </div>
                         <div className="input-group">
                             <label htmlFor="date_creation">Date de Création :</label>
-                            <input className="input__text" type="datetime-local" id="date_creation" value={date_creation} onChange={(e) => setCreationDate(e.target.value)} required />
+                            <input
+                                className="input__text"
+                                type="datetime-local"
+                                id="date_creation"
+                                defaultValue={date_creation}
+                                onChange={(e) => setCreationDate(e.target.value)}
+                                required
+                            />
                         </div>
                         <div className="input-group">
                             <label htmlFor="id_utilisateur_demandeur">Demandeur :</label>
@@ -174,7 +186,7 @@ function CreateTicket() {
                                 className="input__select"
                                 required
                             >
-                                <option value="" disabled>Chosir un demandeur</option>
+                                <option value="" disabled>Choisir un demandeur</option>
                                 {users.map((user) => (
                                     <option key={user._id} value={user._id}>
                                         {`${user._prenom} ${user._nom}`}
@@ -189,9 +201,9 @@ function CreateTicket() {
                                 value={id_utilisateur_technicien}
                                 onChange={(e) => setTechnicien(e.target.value)}
                                 className="input__select"
-                                required
+                            // required
                             >
-                                <option value="" disabled>Chosir un technicien</option>
+                                <option value="">Choisir un technicien</option>
                                 {users.map((user) => (
                                     <option key={user._id} value={user._id}>
                                         {`${user._prenom} ${user._nom}`}
@@ -208,9 +220,12 @@ function CreateTicket() {
                                 className="input__select"
                                 required
                             >
-                                <option value="" disabled>Chosir un statut</option>
+                                <option value="" disabled>Choisir un statut</option>
                                 {statuts.map((statut) => (
-                                    <option key={statut._id} value={statut._id}>
+                                    <option
+                                        key={statut._id}
+                                        value={statut._id}
+                                    >
                                         {`${statut._libelle}`}
                                     </option>
                                 ))}

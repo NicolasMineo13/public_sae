@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
 import "../scss/app.scss";
-import { useAuth } from "./AuthContext"; // Importez le hook useAuth
-import { useNavigate, Link, useParams } from "react-router-dom";
+import { useAuth } from "./AuthContext";
+import { useNavigate, useParams } from "react-router-dom";
+import { ChromePicker } from 'react-color';
 import Header from "./Header";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import home from '../assets/icons/home.svg';
+import back from '../assets/icons/back.svg';
 
 function DetailStatut() {
     const [libelle, setLibelle] = useState('');
+    const [couleur, setCouleur] = useState('');
 
     const [update_libelle, update_setLibelle] = useState('');
+    const [update_couleur, update_setCouleur] = useState('');
 
     const navigate = useNavigate();
 
@@ -33,6 +36,10 @@ function DetailStatut() {
         // Comparez chaque champ avec sa valeur d'origine et ajoutez-le à l'objet de mise à jour s'il a été modifié
         if (libelle !== update_libelle) {
             updatedFields.libelle = update_libelle;
+        }
+
+        if (couleur !== update_couleur) {
+            updatedFields.couleur = update_couleur;
         }
 
         // Vérifiez s'il y a des champs modifiés
@@ -68,6 +75,10 @@ function DetailStatut() {
             // Aucun champ n'a été modifié, vous pouvez afficher un message ou ignorer la mise à jour
             console.log("Aucune modification n'a été apportée au statut.");
         }
+    };
+
+    const handleColorChange = (color) => {
+        update_setCouleur(color.hex);
     };
 
     const handleDelete = async (e) => {
@@ -116,9 +127,14 @@ function DetailStatut() {
             const data = await response.json();
             if (Array.isArray(data.statuts) && data.statuts.length > 0) {
                 const StatutData = data.statuts[0];
+                if (StatutData._couleur === null) {
+                    StatutData._couleur = '';
+                }
                 setLibelle(StatutData._libelle);
+                setCouleur(StatutData._couleur);
                 // Séparation des données de mise à jour
                 update_setLibelle(StatutData._libelle);
+                update_setCouleur(StatutData._couleur);
             } else {
                 console.error(
                     "API response does not contain statut information:",
@@ -131,14 +147,17 @@ function DetailStatut() {
     };
 
     return (
-        <div className="home__container">
+        <div className="container-page">
             <Header />
             <div className="create-ticket__container-page">
                 <div className="top__header-page">
-                    <Link to="/statuts" className="create-ticket__back-button">
-                        <FontAwesomeIcon icon={faArrowLeft} />
-                    </Link>
+                    <a href="/statuts">
+                        <img className='back__button' src={back} />
+                    </a>
                     <h1>Affichage du statut N°{id} - {libelle}</h1>
+                    <a className='m__initial' href="/home">
+                        <img className='home__button' src={home} />
+                    </a>
                 </div>
                 <div className="create-ticket__form-container">
                     <form onSubmit={handleUpdate}>
@@ -150,6 +169,23 @@ function DetailStatut() {
                                 id="libelle"
                                 value={update_libelle}
                                 onChange={(e) => update_setLibelle(e.target.value)}
+                            />
+                        </div>
+                        <div className="input-group">
+                            <label htmlFor="couleur">Couleur :</label>
+                            <input
+                                className="input__text"
+                                type="text"
+                                id="couleur"
+                                placeholder="Couleur..."
+                                defaultValue={update_couleur}
+                                onChange={(e) => update_setCouleur(e.target.value)}
+                            />
+                        </div>
+                        <div className="color-picker">
+                            <ChromePicker
+                                color={update_couleur}
+                                onChange={handleColorChange}
                             />
                         </div>
                         <div className="input-group d__flex  w__30">

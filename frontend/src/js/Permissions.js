@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import '../scss/app.scss'
 import Header from './Header';
 import { useAuth } from './AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
+import ticket_img from '../assets/icons/add.svg'
+import back from '../assets/icons/back.svg'
 
 function Permissions() {
     const [permissions, setPermissions] = useState([]);
@@ -57,6 +57,14 @@ function Permissions() {
         }
     };
 
+    const [isLoading, setIsLoading] = useState(true); // Nouvel état pour le chargement
+
+    useEffect(() => {
+        fetchPermissions()
+            .then(() => setIsLoading(false)) // Marquer le chargement comme terminé
+            .catch(() => setIsLoading(false)); // Gérer les erreurs et marquer le chargement comme terminé
+    }, []);
+
     useEffect(() => {
         fetchPermissions();
     }, [selectedFilters]);
@@ -90,55 +98,66 @@ function Permissions() {
         }
     };
 
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            handleAddFilter();
+        }
+    };
+
     return (
-        <div className="home__container">
+        <div className="container-page">
             <Header />
             <div className="tickets__container-page">
                 <div className='top__header-page'>
-                    <Link to='/home' className='tickets__back-button'>
-                        <FontAwesomeIcon icon={faArrowLeft} className='me-2' />
-                    </Link>
+                    <a href="/home">
+                        <img className='back__button' src={back} />
+                    </a>
                     <h1 className='m-0'>Liste des Permissions</h1>
-                    <button className='input__button m__initial' onClick={handleCreatePermission}>+</button>
+                    <div className='m__initial' onClick={handleCreatePermission}>
+                        <img className='add__button' src={ticket_img} />
+                    </div>
                 </div>
                 <div className='tickets__top-section-container'>
                     <div className="tickets__filter-container">
-                        <div className='input-group'>
+                        <div className='input-group input__group__block'>
                             <label>Catégorie </label>
                             <select className="input__select" value={filterField} onChange={handleFilterFieldChange}>
                                 <option value="id">ID</option>
-                                <option value="titre">Titre</option>
-                                <option value="description">Description</option>
-                                <option value="date_creation">Date de création</option>
-                                <option value="id_utilisateur_demandeur">Demandeur</option>
-                                <option value="id_utilisateur_technicien">Technicien</option>
-                                <option value="id_statut">Statut</option>
-                                <option value="date_derniere_modif">Date de Modification</option>
-                                <option value="date_cloture">Date de clôture</option>
+                                <option value="libelle">Libellé</option>
                             </select>
                         </div>
-                        <div className='input-group'>
+                        <div className='input-group input__group__block'>
                             <label>Recherche</label>
-                            <input className="input__text" type="text" placeholder="Valeur de filtre..." value={filterValue} onChange={handleFilterValueChange} />
+                            <input
+                                className="input__text"
+                                type="text"
+                                placeholder="Valeur de filtre..."
+                                value={filterValue}
+                                onChange={handleFilterValueChange}
+                                onKeyDown={handleKeyPress}
+                            />
                         </div>
-                        <div className='input-group'>
+                        <div className='input-group input__group__block'>
                             <button className='input__button' onClick={handleAddFilter}>Ajouter</button>
-                            <button className='input__button' onClick={() => setSelectedFilters([])}>Effacer les filtres</button>
                         </div>
                     </div>
                 </div>
-                <div className="tickets__top-section-container">
-                    <div className="tickets__filter-container j__start">
-                        {selectedFilters.map((filter, index) => (
-                            <div key={index} className="tickets__filter-item">
-                                <span>{filter.field}: {filter.value}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+                {selectedFilters.length > 0 && (
+                    <div className="tickets__top-section-container">
+                        <div className="tickets__filter-container j__start">
+                            {selectedFilters.map((filter, index) => (
+                                <div key={index} className="tickets__filter-item">
+                                    <span>{filter.field}: {filter.value}</span>
+                                </div>
+                            ))}
+                            <button className='input__button m__initial' onClick={() => setSelectedFilters([])}>Effacer les filtres</button>
+                        </div>
+                    </div>)}
                 <div className='tickets__table-container'>
                     <div className="tickets__table">
-                        {permissions.length === 0 ? (
+                        {isLoading ? ( // Vérifier si le chargement est en cours
+                            <p className='t__center'>Chargement des permissions...</p>
+                        ) : permissions.length === 0 ? (
                             <p className='t__center'>Pas de permissions</p>
                         ) : (
                             <table>

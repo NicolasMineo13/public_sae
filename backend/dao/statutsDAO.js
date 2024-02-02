@@ -3,7 +3,7 @@ export class StatutsDAO {
         throw new Error("getStatuts method not implemented.");
     }
 
-    createStatut(libelle) {
+    createStatut(libelle, couleur) {
         throw new Error("createStatut method not implemented.");
     }
 

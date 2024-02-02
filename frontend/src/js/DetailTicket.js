@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
-// import '../css/DetailTicket.css'; // Assurez-vous d'ajouter ce fichier CSS
 import "../scss/app.scss";
-import { useAuth } from "./AuthContext"; // Importez le hook useAuth
-import { useNavigate, Link, useParams } from "react-router-dom";
+import { useAuth } from "./AuthContext";
+import { useNavigate, useParams } from "react-router-dom";
 import Header from "./Header";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import home from '../assets/icons/home.svg';
 import back from '../assets/icons/back.svg';
 
@@ -127,6 +124,37 @@ function DetailTicket() {
         }
     };
 
+    const handleCloture = async (e) => {
+        e.preventDefault();
+
+        // Prendre l'id du statut 'clôturé'
+        const id_cloture = statuts.filter(statut => statut._libelle === 'Clôturé')[0]._id;
+
+        // Ajoutez les paramètres de requête à l'URL
+        const patchUrl = `http://localhost:5000/tickets/${id}?id_statut=${id_cloture}`;
+
+        // Obtenez le jeton d'accès et le jeton de rafraîchissement du stockage local
+        const token = localStorage.getItem('token');
+        const refreshToken = localStorage.getItem('refreshtoken');
+        // Exemple d'envoi de la requête PATCH (vous devrez adapter cela à votre API)
+        const response = await fetch(patchUrl, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token,
+                'Refresh-Token': refreshToken,
+            },
+        });
+
+        // Si la clôture réussit, redirigez l'utilisateur
+        if (response.ok) {
+            navigate('/tickets');
+        } else {
+            // Gérez les erreurs de la requête ici
+            console.error('Erreur lors de la clôture du ticket');
+        }
+    };
+
     const fetchUsers = async () => {
         try {
             const token = localStorage.getItem("token");
@@ -179,7 +207,6 @@ function DetailTicket() {
 
             const data = await response.json();
             if (Array.isArray(data.statuts)) {
-                // Set the list of users in the state
                 setStatuts(data.statuts);
             } else {
                 console.error("API response does not contain user information:", data);
@@ -236,7 +263,7 @@ function DetailTicket() {
     };
 
     return (
-        <div className="home__container">
+        <div className="container-page">
             <Header />
             <div className="create-ticket__container-page">
                 <div className="top__header-page">
@@ -245,7 +272,7 @@ function DetailTicket() {
                     </a>
                     <h1>Affichage du ticket N°{id} - {update_titre}</h1>
                     <a className='m__initial' href="/home">
-                        <img className='home__button' src={home}/>
+                        <img className='home__button' src={home} />
                     </a>
                 </div>
                 <div className="create-ticket__form-container">
@@ -332,23 +359,31 @@ function DetailTicket() {
                                 <option value="" disabled>
                                     Chosir un statut
                                 </option>
-                                {statuts.map((statut) => (
-                                    <option
-                                        key={statut._id}
-                                        value={statut._id}
-                                    >
-                                        {`${statut._libelle}`}
-                                    </option>
-                                ))}
+                                {statuts.map((statut) => {
+                                    if (statut._libelle !== 'Clôturé') {
+                                        return (
+                                            <option
+                                                key={statut._id}
+                                                value={statut._id}
+                                            >
+                                                {`${statut._libelle}`}
+                                            </option>
+                                        );
+                                    }
+                                    return null;
+                                })}
                             </select>
                         </div>
                         <div className="input-group d__flex  w__30">
                             <button className="input__button" type="submit">
                                 Modifier
                             </button>
-                            <a className="input__button" onClick={handleDelete}>
+                            <button className="input__button" onClick={handleDelete}>
                                 Supprimer
-                            </a>
+                            </button>
+                            <button className="input__button" onClick={handleCloture}>
+                                Clôturer
+                            </button>
                         </div>
                     </form>
                 </div>

@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
-// import '../css/DetailUtilisateur.css'; // Assurez-vous d'ajouter ce fichier CSS
 import "../scss/app.scss";
-import { useAuth } from "./AuthContext"; // Importez le hook useAuth
-import { useNavigate, Link, useParams } from "react-router-dom";
+import { useAuth } from "./AuthContext";
+import { useNavigate, useParams } from "react-router-dom";
 import Header from "./Header";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import home from '../assets/icons/home.svg';
 import back from '../assets/icons/back.svg';
 
@@ -204,7 +201,7 @@ function DetailUtilisateur() {
     };
 
     return (
-        <div className="home__container">
+        <div className="container-page">
             <Header />
             <div className="create-utilisateur__container-page">
                 <div className="top__header-page">
@@ -213,7 +210,7 @@ function DetailUtilisateur() {
                     </a>
                     <h1>Affichage de l'utilisateur N°{id} - {update_login}</h1>
                     <a className='m__initial' href="/home">
-                        <img className='home__button' src={home}/>
+                        <img className='home__button' src={home} />
                     </a>
                 </div>
                 <div className="create-utilisateur__form-container">

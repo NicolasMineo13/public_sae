@@ -23,6 +23,11 @@ export class StatutsMysqlDAO extends StatutsDAO {
                 params.push(filter.libelle);
             }
 
+            if (filter.couleur) {
+                conditions.push("couleur = ?");
+                params.push(filter.couleur);
+            }
+
             // Construisez la requête
             let query = "SELECT * FROM statuts";
             if (conditions.length > 0) {
@@ -37,7 +42,7 @@ export class StatutsMysqlDAO extends StatutsDAO {
         }
     }
 
-    async createStatut(libelle) {
+    async createStatut(libelle, couleur) {
         try {
             const db = await this.db;
 
@@ -46,8 +51,8 @@ export class StatutsMysqlDAO extends StatutsDAO {
             }
 
             const [result] = await db.execute(
-                "INSERT INTO statuts (libelle) VALUES (?)",
-                [libelle]
+                "INSERT INTO statuts (libelle, couleur) VALUES (?, ?)",
+                [libelle, couleur]
             );
 
             return result.insertId;
@@ -62,7 +67,7 @@ export class StatutsMysqlDAO extends StatutsDAO {
         try {
             const db = await this.db;
 
-            const { libelle } = updatedFields;
+            let { libelle, couleur } = updatedFields;
 
             let query = "UPDATE statuts SET";
             const params = [];
@@ -70,6 +75,13 @@ export class StatutsMysqlDAO extends StatutsDAO {
             if (libelle) {
                 query += " libelle = ?,";
                 params.push(libelle);
+            }
+
+            if (couleur) {
+                query += " couleur = ?,";
+                params.push(couleur);
+            } else {
+                query += " couleur = null,";
             }
 
             query = query.slice(0, -1);

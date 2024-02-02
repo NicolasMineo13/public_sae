@@ -15,7 +15,9 @@ body {
 	height: 30px;
 }
 
-.add__button, .home__button, .back__button {
+.add__button,
+.home__button,
+.back__button {
 	filter: $primary_svg;
 	cursor: pointer;
 }
@@ -25,11 +27,11 @@ body {
 }
 
 .m__initial {
-	margin:initial!important;
+	margin: initial !important;
 }
 
 .j__start {
-	justify-content: start!important;
+	justify-content: start !important;
 }
 
 .t__center {
@@ -37,11 +39,11 @@ body {
 }
 
 .d__flex {
-	display: flex!important;
-	flex-direction: row!important;
-	align-items: center!important;
+	display: flex !important;
+	flex-direction: row !important;
+	align-items: center !important;
 }
 
 .w__30 {
-	width: 30%!important;
+	width: 30% !important;
 }

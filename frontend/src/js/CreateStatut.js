@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import '../scss/app.scss'
-import { useAuth } from './AuthContext'; // Importez le hook useAuth
-import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from './AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { ChromePicker } from 'react-color';
 import Header from './Header';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import back from '../assets/icons/back.svg';
+import home from '../assets/icons/home.svg';
 
 function CreateStatut() {
     const [libelle, setLibelle] = useState('');
+    const [couleur, setCouleur] = useState('');
 
     const navigate = useNavigate();
 
@@ -21,6 +23,7 @@ function CreateStatut() {
         // Créez un objet statut avec les données entrées par l'utilisateur
         const newStatut = {
             libelle,
+            couleur
         };
 
         try {
@@ -54,21 +57,45 @@ function CreateStatut() {
         }
     };
 
+    const handleColorChange = (color) => {
+        setCouleur(color.hex);
+    };
+
     return (
-        <div className="home__container">
+        <div className="container-page">
             <Header />
             <div className="create-ticket__container-page">
                 <div className='top__header-page'>
-                    <Link to="/statuts" className="create-ticket__back-button">
-                        <FontAwesomeIcon icon={faArrowLeft} />
-                    </Link>
+                    <a href="/statuts">
+                        <img className='back__button' src={back} />
+                    </a>
                     <h1>Créer un Statut</h1>
+                    <a className='m__initial' href="/home">
+                        <img className='home__button' src={home} />
+                    </a>
                 </div>
                 <div className='create-ticket__form-container'>
                     <form onSubmit={handleSubmit}>
                         <div className="input-group">
                             <label htmlFor="libelle">Libellé :</label>
                             <input className="input__text" type="text" id="libelle" placeholder='Libellé...' value={libelle} onChange={(e) => setLibelle(e.target.value)} required />
+                        </div>
+                        <div className="input-group">
+                            <label htmlFor="couleur">Couleur :</label>
+                            <input
+                                className="input__text"
+                                type="text"
+                                id="couleur"
+                                placeholder="Couleur..."
+                                value={couleur}
+                                onChange={(e) => setCouleur(e.target.value)}
+                            />
+                        </div>
+                        <div className="color-picker">
+                            <ChromePicker
+                                color={couleur}
+                                onChange={handleColorChange}
+                            />
                         </div>
                         <button className="input__button" type="submit">Créer</button>
                     </form>

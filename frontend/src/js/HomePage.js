@@ -1,16 +1,16 @@
 import React from 'react';
-import { useAuth } from './AuthContext'; // Importez le hook useAuth
-import Header from './Header'; // Importez le composant Header
+import { useAuth } from './AuthContext';
+import Header from './Header';
 
 
 function HomePage() {
 
-    const { isLoggedIn, logout } = useAuth(); // Utilisez le hook useAuth pour obtenir la fonction
+    const { isLoggedIn, logout } = useAuth();
 
     isLoggedIn();
 
     return (
-        <div>
+        <div className='container-page'>
             <Header />
         </div>
     );

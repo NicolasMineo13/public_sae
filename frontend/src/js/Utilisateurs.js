@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../scss/app.scss'
 import Header from './Header';
 import { useAuth } from './AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 import ticket_img from '../assets/icons/add.svg';
 import back from '../assets/icons/back.svg';
 
@@ -59,14 +57,22 @@ function Utilisateurs() {
         }
     };
 
-    const openDetail = (e) => {
-        const utilisateurId = e.currentTarget.firstChild.textContent;
-        navigate(`/utilisateurs/${utilisateurId}`);
-    };
+    const [isLoading, setIsLoading] = useState(true); // Nouvel état pour le chargement
+
+    useEffect(() => {
+        fetchUtilisateurs()
+            .then(() => setIsLoading(false)) // Marquer le chargement comme terminé
+            .catch(() => setIsLoading(false)); // Gérer les erreurs et marquer le chargement comme terminé
+    }, []);
 
     useEffect(() => {
         fetchUtilisateurs();
     }, [selectedFilters]);
+
+    const openDetail = (e) => {
+        const utilisateurId = e.currentTarget.firstChild.textContent;
+        navigate(`/utilisateurs/${utilisateurId}`);
+    };
 
     const handleFilterFieldChange = (e) => {
         setFilterField(e.target.value);
@@ -139,8 +145,14 @@ function Utilisateurs() {
         }
     }, [utilisateurs]);
 
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            handleAddFilter();
+        }
+    };
+
     return (
-        <div className="home__container">
+        <div className="container-page">
             <Header />
             <div className="utilisateurs__container">
                 <div className='top__header-page'>
@@ -162,12 +174,19 @@ function Utilisateurs() {
                                 <option value="prenom">Prénom</option>
                                 <option value="email">E-mail</option>
                                 <option value="login">Login</option>
-                                <option value="role">Rôle</option>
+                                <option value="id_role">Rôle</option>
                             </select>
                         </div>
                         <div className='input-group input__group__block'>
                             <label>Recherche</label>
-                            <input className="input__text" type="text" placeholder="Valeur de filtre..." value={filterValue} onChange={handleFilterValueChange} />
+                            <input
+                                className="input__text"
+                                type="text"
+                                placeholder="Valeur de filtre..."
+                                value={filterValue}
+                                onChange={handleFilterValueChange}
+                                onKeyDown={handleKeyPress}
+                            />
                         </div>
                         <div className='input-group input__group__block'>
                             <button className='input__button' onClick={handleAddFilter}>Ajouter un filtre</button>
@@ -175,19 +194,21 @@ function Utilisateurs() {
                     </div>
                 </div>
                 {selectedFilters.length > 0 && (
-                <div className="utilisateurs__top-section-container">
-                    <div className="utilisateurs__filter-container j__start">
-                        {selectedFilters.map((filter, index) => (
-                            <div key={index} className="utilisateurs__filter-item">
-                                {filter.field}: {filter.value}
-                            </div>
-                        ))}
-                        <button className='input__button' onClick={() => setSelectedFilters([])}>Effacer les filtres</button>
-                    </div>
-                </div>)}
+                    <div className="utilisateurs__top-section-container">
+                        <div className="utilisateurs__filter-container j__start">
+                            {selectedFilters.map((filter, index) => (
+                                <div key={index} className="utilisateurs__filter-item">
+                                    {filter.field}: {filter.value}
+                                </div>
+                            ))}
+                            <button className='input__button' onClick={() => setSelectedFilters([])}>Effacer les filtres</button>
+                        </div>
+                    </div>)}
                 <div className='utilisateurs__table-container'>
                     <div className="utilisateurs__table">
-                        {utilisateurs.length === 0 ? (
+                        {isLoading ? ( // Vérifier si le chargement est en cours
+                            <p className='t__center'>Chargement des utilisateurs...</p>
+                        ) : utilisateurs.length === 0 ? (
                             <p className='t__center'>Pas d'utilisateur</p>
                         ) : (
                             <table>

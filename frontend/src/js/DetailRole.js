@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "../scss/app.scss";
-import { useAuth } from "./AuthContext"; // Importez le hook useAuth
-import { useNavigate, Link, useParams } from "react-router-dom";
+import { useAuth } from "./AuthContext";
+import { useNavigate, useParams } from "react-router-dom";
 import Header from "./Header";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import home from '../assets/icons/home.svg';
+import back from '../assets/icons/back.svg';
 
 function DetailRole() {
     const [libelle, setLibelle] = useState('');
@@ -131,14 +131,17 @@ function DetailRole() {
     };
 
     return (
-        <div className="home__container">
+        <div className="container-page">
             <Header />
             <div className="create-ticket__container-page">
                 <div className="top__header-page">
-                    <Link to="/roles" className="create-ticket__back-button">
-                        <FontAwesomeIcon icon={faArrowLeft} />
-                    </Link>
+                    <a href="/roles">
+                        <img className='back__button' src={back} />
+                    </a>
                     <h1>Affichage du role N°{id} - {libelle}</h1>
+                    <a className='m__initial' href="/home">
+                        <img className='home__button' src={home} />
+                    </a>
                 </div>
                 <div className="create-ticket__form-container">
                     <form onSubmit={handleUpdate}>

@@ -70,8 +70,21 @@ export class TicketsMysqlDAO extends TicketsDAO {
             }
 
             if (filter.id_statut) {
-                conditions.push("id_statut = ?");
-                params.push(filter.id_statut);
+                if (!isNaN(parseInt(filter.id_statut, 10))) {
+                    conditions.push("id_statut = ?");
+                    params.push(filter.id_statut);
+                } else {
+                    // Recherche d'ID d'utilisateur par libellé
+                    const searchTerm = `%${filter.id_statut}%`;
+                    const [result] = await db.execute(
+                        "SELECT id FROM statuts WHERE libelle LIKE ?",
+                        [searchTerm]
+                    );
+                    if (result && result.length > 0) {
+                        conditions.push("id_statut = ?");
+                        params.push(result[0].id);
+                    }
+                }
             }
 
             if (filter.date_derniere_modif) {
@@ -90,6 +103,14 @@ export class TicketsMysqlDAO extends TicketsDAO {
                 query += " WHERE " + conditions.join(" AND ");
             }
 
+            if (filter.sort) {
+                query += ` ORDER BY ${filter.sort}`;
+            }
+
+            if (filter.sens) {
+                query += ` ${filter.sens}`;
+            }
+
             const [results] = await db.execute(query, params);
             return results;
         } catch (error) {
@@ -99,11 +120,15 @@ export class TicketsMysqlDAO extends TicketsDAO {
         }
     }
 
-    async createTicket(titre, description, date_creation, id_utilisateur_demandeur, id_utilisateur_technicien, id_statut, date_derniere_modif, date_cloture) {
+    async createTicket(titre, description, date_creation, id_utilisateur_demandeur, id_utilisateur_technicien, id_statut) {
         try {
             const db = await this.db;
 
-            if (!titre || !description || !date_creation || !id_utilisateur_demandeur || !id_utilisateur_technicien || !id_statut) {
+            if (!id_utilisateur_technicien) {
+                id_utilisateur_technicien = null;
+            }
+
+            if (!titre || !description || !date_creation || !id_utilisateur_demandeur || !id_statut) {
                 throw new Error("Paramètres manquants");
             }
 
@@ -124,7 +149,7 @@ export class TicketsMysqlDAO extends TicketsDAO {
         try {
             const db = await this.db;
 
-            const { titre, description, date_creation, id_utilisateur_demandeur, id_utilisateur_technicien, id_statut, date_derniere_modif, date_cloture } = updatedFields;
+            const { titre, description, date_creation, id_utilisateur_demandeur, id_utilisateur_technicien, id_statut, date_cloture } = updatedFields;
 
             let query = "UPDATE tickets SET";
             const params = [];
@@ -159,10 +184,10 @@ export class TicketsMysqlDAO extends TicketsDAO {
                 params.push(id_statut);
             }
 
-            if (date_derniere_modif) {
-                query += " date_derniere_modif = ?,";
-                params.push(date_derniere_modif);
-            }
+            const now = new Date();
+            const date_derniere_modif = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()} ${now.getHours()}:${now.getMinutes()}`;
+            query += " date_derniere_modif = ?,";
+            params.push(date_derniere_modif);
 
             if (date_cloture) {
                 query += " date_cloture = ?,";

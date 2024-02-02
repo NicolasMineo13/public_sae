@@ -3,7 +3,7 @@ import { Statut } from "../models/statut.js";
 
 const StatutsController = {
     getStatuts: async (req, res) => {
-        const { id, libelle } = req.query;
+        const { id, libelle, couleur } = req.query;
         let conditions = {};
 
         if (id) {
@@ -14,6 +14,10 @@ const StatutsController = {
             conditions.libelle = libelle;
         }
 
+        if (couleur) {
+            conditions.couleur = couleur;
+        }
+
         try {
             const statuts = await StatutsService.getStatuts(
                 conditions
@@ -21,7 +25,8 @@ const StatutsController = {
 
             const statutsObject = statuts.map(statut => new Statut(
                 statut.id,
-                statut.libelle
+                statut.libelle,
+                statut.couleur
             ));
 
             res.json({ statuts: statutsObject });
@@ -34,11 +39,12 @@ const StatutsController = {
     },
 
     createStatut: async (req, res) => {
-        const { libelle } = req.query;
+        const { libelle, couleur } = req.query;
 
         try {
             const newStatut = await StatutsService.createStatut(
-                libelle
+                libelle,
+                couleur
             );
 
             if (newStatut instanceof Error) {
