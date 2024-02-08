@@ -1,15 +1,17 @@
 import { StatutsDAO } from "./statutsDAO.js";
-import { getDatabaseInstance } from "../db.js";
+import { getDatabasePool } from "../db.js";
 
 export class StatutsMysqlDAO extends StatutsDAO {
     constructor() {
         super();
-        this.db = getDatabaseInstance();
+        this.pool = getDatabasePool();
     }
 
     async getStatuts(filter) {
         try {
-            const db = await this.db;
+            const pool = await this.pool;
+            const db = await pool.getConnection();
+
             const conditions = [];
             const params = [];
 
@@ -35,6 +37,7 @@ export class StatutsMysqlDAO extends StatutsDAO {
             }
 
             const [results] = await db.execute(query, params);
+            db.release();
             return results;
         } catch (error) {
             console.error("Erreur lors de la récupération des statuts :", error);
@@ -44,9 +47,11 @@ export class StatutsMysqlDAO extends StatutsDAO {
 
     async createStatut(libelle, couleur) {
         try {
-            const db = await this.db;
+            const pool = await this.pool;
+            const db = await pool.getConnection();
 
             if (!libelle) {
+                db.release();
                 throw new Error("Paramètres manquants");
             }
 
@@ -55,6 +60,7 @@ export class StatutsMysqlDAO extends StatutsDAO {
                 [libelle, couleur]
             );
 
+            db.release();
             return result.insertId;
         }
         catch (error) {
@@ -65,7 +71,8 @@ export class StatutsMysqlDAO extends StatutsDAO {
 
     async updateStatut(id, updatedFields) {
         try {
-            const db = await this.db;
+            const pool = await this.pool;
+            const db = await pool.getConnection();
 
             let { libelle, couleur } = updatedFields;
 
@@ -91,8 +98,10 @@ export class StatutsMysqlDAO extends StatutsDAO {
             const result = await db.execute(query, params);
 
             if (result[0].affectedRows > 0) {
+                db.release();
                 return true; // Mise à jour réussie
             } else {
+                db.release();
                 return false; // Aucun statut mis à jour (id non trouvé)
             }
         }
@@ -105,11 +114,15 @@ export class StatutsMysqlDAO extends StatutsDAO {
 
     async deleteStatut(id) {
         try {
-            const db = await this.db;
+            const pool = await this.pool;
+            const db = await pool.getConnection();
+
             const result = await db.execute("DELETE FROM statuts WHERE id = ?", [id]);
             if (result[0].affectedRows > 0) {
+                db.release();
                 return true; // Suppression réussie
             } else {
+                db.release();
                 return false; // Aucun statut supprimé (id non trouvé)
             }
         }

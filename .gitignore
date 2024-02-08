@@ -6,3 +6,7 @@ documentation/node_modules/
 # Ignorer le fichier package-lock.json
 backend/package-lock.json
 frontend/package-lock.json
+documentation/package-lock.json
+
+# Ignorer le fichier .env
+backend/.env

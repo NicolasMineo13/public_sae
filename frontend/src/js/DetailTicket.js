@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Header from "./Header";
 import home from '../assets/icons/home.svg';
 import back from '../assets/icons/back.svg';
+import API_BASE_URL from './config';
 
 function DetailTicket() {
     const [titre, setTitle] = useState('');
@@ -72,7 +73,7 @@ function DetailTicket() {
             const queryParams = new URLSearchParams(updatedFields);
 
             // Ajoutez les paramètres de requête à l'URL
-            const patchUrl = `http://localhost:5000/tickets/${id}?${queryParams.toString()}`;
+            const patchUrl = `${API_BASE_URL}/tickets/${id}?${queryParams.toString()}`;
 
             // Obtenez le jeton d'accès et le jeton de rafraîchissement du stockage local
             const token = localStorage.getItem('token');
@@ -105,7 +106,7 @@ function DetailTicket() {
 
         const token = localStorage.getItem('token');
         const refreshToken = localStorage.getItem('refreshtoken');
-        const url = `http://localhost:5000/tickets/${id}`;
+        const url = `${API_BASE_URL}/tickets/${id}`;
         const response = await fetch(url, {
             method: 'DELETE',
             headers: {
@@ -131,7 +132,7 @@ function DetailTicket() {
         const id_cloture = statuts.filter(statut => statut._libelle === 'Clôturé')[0]._id;
 
         // Ajoutez les paramètres de requête à l'URL
-        const patchUrl = `http://localhost:5000/tickets/${id}?id_statut=${id_cloture}`;
+        const patchUrl = `${API_BASE_URL}/tickets/${id}?id_statut=${id_cloture}`;
 
         // Obtenez le jeton d'accès et le jeton de rafraîchissement du stockage local
         const token = localStorage.getItem('token');
@@ -159,7 +160,7 @@ function DetailTicket() {
         try {
             const token = localStorage.getItem("token");
             const refreshToken = localStorage.getItem("refreshtoken");
-            const url = "http://localhost:5000/utilisateurs";
+            const url = API_BASE_URL + "/utilisateurs";
 
             const response = await fetch(url, {
                 method: "GET",
@@ -190,7 +191,7 @@ function DetailTicket() {
         try {
             const token = localStorage.getItem("token");
             const refreshToken = localStorage.getItem("refreshtoken");
-            const url = "http://localhost:5000/statuts";
+            const url = API_BASE_URL + "/statuts";
 
             const response = await fetch(url, {
                 method: "GET",
@@ -220,7 +221,7 @@ function DetailTicket() {
         try {
             const token = localStorage.getItem("token");
             const refreshToken = localStorage.getItem("refreshtoken");
-            const url = "http://localhost:5000/tickets?id=" + id;
+            const url = API_BASE_URL + "/tickets?id=" + id;
 
             const response = await fetch(url, {
                 method: "GET",
@@ -265,7 +266,7 @@ function DetailTicket() {
     return (
         <div className="container-page">
             <Header />
-            <div className="create-ticket__container-page">
+            <div className="detail-ticket__container-page">
                 <div className="top__header-page">
                     <a href="/tickets">
                         <img className='back__button' src={back} />
@@ -275,7 +276,7 @@ function DetailTicket() {
                         <img className='home__button' src={home} />
                     </a>
                 </div>
-                <div className="create-ticket__form-container">
+                <div className="form-container">
                     <form onSubmit={handleUpdate}>
                         <div className="input-group">
                             <label htmlFor="titre">Titre :</label>
@@ -310,7 +311,7 @@ function DetailTicket() {
                             <label htmlFor="id_utilisateur_demandeur">Demandeur :</label>
                             <select
                                 id="id_utilisateur_demandeur"
-                                className="input__select"
+                                className="input__select w__100"
                                 value={update_id_utilisateur_demandeur}
                                 onChange={(e) => update_setDemandeur(e.target.value)}
                             >
@@ -331,7 +332,7 @@ function DetailTicket() {
                             <label htmlFor="id_utilisateur_technicien">Technicien :</label>
                             <select
                                 id="id_utilisateur_technicien"
-                                className="input__select"
+                                className="input__select w__100"
                                 value={update_id_utilisateur_technicien}
                                 onChange={(e) => update_setTechnicien(e.target.value)}
                             >
@@ -352,7 +353,7 @@ function DetailTicket() {
                             <label htmlFor="id_statut">Statut :</label>
                             <select
                                 id="id_statut"
-                                className="input__select"
+                                className="input__select w__100"
                                 value={update_id_statut}
                                 onChange={(e) => update_setStatut(e.target.value)}
                             >

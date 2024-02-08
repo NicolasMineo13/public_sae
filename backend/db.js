@@ -1,28 +1,21 @@
 import mysql from "mysql2/promise";
+import dotenv from 'dotenv';
+dotenv.config();
 
-let dbInstance = null;
-let dbInstancePromise = null;
+let pool = null;
 
-export async function getDatabaseInstance() {
-    if (dbInstancePromise === null) {
-        dbInstancePromise = (async () => {
-            try {
-                dbInstance = await mysql.createConnection({
-                    host: "mn606466-001.eu.clouddb.ovh.net",
-                    port: 35151,
-                    user: "nicolas",
-                    password: "Julien13",
-                    database: "sae_bdd",
-                });
-                await dbInstance.connect();
-                console.log('Connecté à la base de données MariaDB');
-                return dbInstance;
-            } catch (err) {
-                console.error('Erreur de connexion à la base de données :', err);
-                throw err;
-            }
-        })();
+export async function getDatabasePool() {
+    if (pool === null) {
+        pool = mysql.createPool({
+            host: process.env.DATABASE_HOST,
+            port: process.env.DATABASE_PORT,
+            user: process.env.DATABASE_USER,
+            password: process.env.DATABASE_PASSWORD,
+            database: process.env.DATABASE_NAME,
+            waitForConnections: true,
+            connectionLimit: 10, // You can adjust this value according to your needs
+            queueLimit: 0 // No limit for the queue
+        });
     }
-
-    return dbInstancePromise;
+    return pool;
 }

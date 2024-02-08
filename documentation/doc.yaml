@@ -1,128 +1,829 @@
 openapi: 3.0.0
 info:
-  title: Exemple API
-  description: Description de votre API
-  version: 1.0.0
+    title: API Gestionnaire de tickets
+    version: 1.0.0
+    description: Documentation de l'API Gestionnaire de tickets
 servers:
-  - url: http://localhost:8080
+    - url: http://localhost:5000
+      description: Serveur local
+tags:
+    - name: Authentification
+      description: Opérations d'authentification des utilisateurs
+    - name: Utilisateurs
+      description: Opérations sur les utilisateurs
+    - name: Tickets
+      description: Opérations sur les tickets
+    - name: Rôles
+      description: Opérations sur les rôles
+    - name: Statuts
+      description: Opérations sur les statuts
+    - name: Permissions
+      description: Opérations sur les permissions
 paths:
-  /utilisateurs:
-    get:
-      summary: Récupérer tous les utilisateurs de sa mere
-      responses:
-        '200':
-          description: Liste des utilisateurs récupérée avec succès
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    nom:
+    /utilisateurs/login:
+        post:
+            tags:
+                - Authentification
+            summary: Connexion d'un utilisateur
+            parameters:
+                - in: query
+                  name: login
+                  required: true
+                  schema:
                       type: string
-                    age:
+                - in: query
+                  name: password
+                  required: true
+                  schema:
+                      type: string
+                      format: password
+            responses:
+                "200":
+                    description: Utilisateur connecté avec succès
+                "404":
+                    description: Utilisateur non trouvé
+                "500":
+                    description: Erreur lors de la connexion de l'utilisateur
+
+    /utilisateurs/logout/{id}:
+        post:
+            security:
+                - Authorization: []
+                - refresh-token: []
+            tags:
+                - Authentification
+            summary: Déconnexion d'un utilisateur
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
                       type: integer
-    post:
-      summary: Créer un nouvel utilisateur
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
+            responses:
+                "200":
+                    description: Utilisateur déconnecté avec succès.
+                "404":
+                    description: Déconnexion impossible.
+                "500":
+                    description: Erreur lors de la déconnexion de l'utilisateur
+
+    /utilisateurs:
+        get:
+            security:
+                - Authorization: []
+                - refresh-token: []
+            tags:
+                - Utilisateurs
+            summary: Obtenir la liste des utilisateurs
+            parameters:
+                - in: query
+                  name: id
+                  schema:
+                      type: integer
+                - in: query
+                  name: nom
+                  schema:
+                      type: string
+                - in: query
+                  name: prenom
+                  schema:
+                      type: string
+                - in: query
+                  name: email
+                  schema:
+                      type: string
+                - in: query
+                  name: login
+                  schema:
+                      type: string
+                - in: query
+                  name: password
+                  schema:
+                      type: string
+                - in: query
+                  name: id_role
+                  schema:
+                      type: integer
+                - in: query
+                  name: token
+                  schema:
+                      type: string
+                - in: query
+                  name: refreshToken
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Liste des utilisateurs
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    utilisateurs:
+                                        type: array
+                                        items:
+                                            $ref: "#/components/schemas/Utilisateur"
+                "500":
+                    description: Erreur lors de la récupération des utilisateurs
+
+        post:
+            tags:
+                - Utilisateurs
+            summary: Créer un nouvel utilisateur
+            parameters:
+                - in: query
+                  name: nom
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: prenom
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: email
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: password
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: id_role
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: Utilisateur créé avec succès
+                "500":
+                    description: Erreur lors de la création de l'utilisateur
+
+    /utilisateurs/{id}:
+        patch:
+            security:
+                - Authorization: []
+                - refresh-token: []
+            tags:
+                - Utilisateurs
+            summary: Mettre à jour un utilisateur
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: integer
+                - in: query
+                  name: nom
+                  schema:
+                      type: string
+                - in: query
+                  name: prenom
+                  schema:
+                      type: string
+                - in: query
+                  name: email
+                  schema:
+                      type: string
+                - in: query
+                  name: password
+                  schema:
+                      type: string
+                - in: query
+                  name: id_role
+                  schema:
+                      type: integer
+                - in: query
+                  name: token
+                  schema:
+                      type: string
+                - in: query
+                  name: refreshToken
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Utilisateur mis à jour avec succès
+                "400":
+                    description: L'id de l'utilisateur est requis ou aucun champ à mettre à jour.
+                "404":
+                    description: Utilisateur non trouvé.
+                "500":
+                    description: Erreur lors de la mise à jour de l'utilisateur
+
+        delete:
+            security:
+                - Authorization: []
+                - refresh-token: []
+            tags:
+                - Utilisateurs
+            summary: Supprimer un utilisateur
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: Utilisateur supprimé avec succès
+                "400":
+                    description: L'id de l'utilisateur est requis.
+                "404":
+                    description: Utilisateur non trouvé.
+                "500":
+                    description: Erreur lors de la suppression de l'utilisateur
+    /tickets:
+        get:
+            security:
+                - Authorization: []
+                - refresh-token: []
+            tags:
+                - Tickets
+            summary: Obtenir la liste des tickets
+            parameters:
+                - in: query
+                  name: id
+                  schema:
+                      type: integer
+                - in: query
+                  name: titre
+                  schema:
+                      type: string
+                - in: query
+                  name: description
+                  schema:
+                      type: string
+                - in: query
+                  name: date_creation
+                  schema:
+                      type: string
+                      format: date-time
+                - in: query
+                  name: id_utilisateur_demandeur
+                  schema:
+                      type: integer
+                - in: query
+                  name: id_utilisateur_technicien
+                  schema:
+                      type: integer
+                - in: query
+                  name: id_statut
+                  schema:
+                      type: integer
+                - in: query
+                  name: date_derniere_modif
+                  schema:
+                      type: string
+                      format: date-time
+                - in: query
+                  name: date_cloture
+                  schema:
+                      type: string
+                      format: date-time
+            responses:
+                "200":
+                    description: Liste des tickets
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    tickets:
+                                        type: array
+                                        items:
+                                            $ref: "#/components/schemas/Ticket"
+                "500":
+                    description: Erreur lors de la récupération des tickets
+
+        post:
+            security:
+                - Authorization: []
+                - refresh-token: []
+            tags:
+                - Tickets
+            summary: Créer un nouveau ticket
+            parameters:
+                - in: query
+                  name: titre
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: description
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: date_creation
+                  required: true
+                  schema:
+                      type: string
+                      format: date-time
+                - in: query
+                  name: id_utilisateur_demandeur
+                  required: true
+                  schema:
+                      type: integer
+                - in: query
+                  name: id_utilisateur_technicien
+                  required: true
+                  schema:
+                      type: integer
+                - in: query
+                  name: id_statut
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: Ticket créé avec succès
+                "500":
+                    description: Erreur lors de la création du ticket
+
+    /tickets/{id}:
+        patch:
+            security:
+                - Authorization: []
+                - refresh-token: []
+            tags:
+                - Tickets
+            summary: Mettre à jour un ticket
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: integer
+                - in: query
+                  name: titre
+                  schema:
+                      type: string
+                - in: query
+                  name: description
+                  schema:
+                      type: string
+                - in: query
+                  name: date_creation
+                  schema:
+                      type: string
+                      format: date-time
+                - in: query
+                  name: id_utilisateur_demandeur
+                  schema:
+                      type: integer
+                - in: query
+                  name: id_utilisateur_technicien
+                  schema:
+                      type: integer
+                - in: query
+                  name: id_statut
+                  schema:
+                      type: integer
+                - in: query
+                  name: date_derniere_modif
+                  schema:
+                      type: string
+                      format: date-time
+                - in: query
+                  name: date_cloture
+                  schema:
+                      type: string
+                      format: date-time
+            responses:
+                "200":
+                    description: Ticket mis à jour avec succès
+                "400":
+                    description: L'id du ticket est requis ou aucun champ à mettre à jour.
+                "404":
+                    description: Ticket non trouvé.
+                "500":
+                    description: Erreur lors de la mise à jour du ticket
+
+        delete:
+            security:
+                - Authorization: []
+                - refresh-token: []
+            tags:
+                - Tickets
+            summary: Supprimer un ticket
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: Ticket supprimé avec succès
+                "400":
+                    description: L'id du ticket est requis.
+                "404":
+                    description: Ticket non trouvé.
+                "500":
+                    description: Erreur lors de la suppression du ticket
+
+    /roles:
+        get:
+            security:
+                - Authorization: []
+                - refresh-token: []
+            tags:
+                - Rôles
+            summary: Obtenir la liste des rôles
+            parameters:
+                - in: query
+                  name: id
+                  schema:
+                      type: integer
+                - in: query
+                  name: libelle
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Liste des rôles
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    roles:
+                                        type: array
+                                        items:
+                                            $ref: "#/components/schemas/Role"
+                "500":
+                    description: Erreur lors de la récupération des rôles
+
+        post:
+            security:
+                - Authorization: []
+                - refresh-token: []
+            tags:
+                - Rôles
+            summary: Créer un nouveau rôle
+            parameters:
+                - in: query
+                  name: libelle
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Rôle créé avec succès
+                "500":
+                    description: Erreur lors de la création du rôle
+
+    /roles/{id}:
+        patch:
+            security:
+                - Authorization: []
+                - refresh-token: []
+            tags:
+                - Rôles
+            summary: Mettre à jour un rôle
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: integer
+                - in: query
+                  name: libelle
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Rôle mis à jour avec succès
+                "400":
+                    description: L'id du rôle est requis ou aucun champ à mettre à jour.
+                "404":
+                    description: Rôle non trouvé.
+                "500":
+                    description: Erreur lors de la mise à jour du rôle
+
+        delete:
+            security:
+                - Authorization: []
+                - refresh-token: []
+            tags:
+                - Rôles
+            summary: Supprimer un rôle
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: Rôle supprimé avec succès
+                "400":
+                    description: L'id du rôle est requis.
+                "404":
+                    description: Rôle non trouvé.
+                "500":
+                    description: Erreur lors de la suppression du rôle
+
+    /statuts:
+        get:
+            security:
+                - Authorization: []
+                - refresh-token: []
+            tags:
+                - Statuts
+            summary: Obtenir la liste des statuts
+            parameters:
+                - in: query
+                  name: id
+                  schema:
+                      type: integer
+                - in: query
+                  name: libelle
+                  schema:
+                      type: string
+                - in: query
+                  name: couleur
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Liste des statuts
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    statuts:
+                                        type: array
+                                        items:
+                                            $ref: "#/components/schemas/Statut"
+                "500":
+                    description: Erreur lors de la récupération des statuts
+
+        post:
+            security:
+                - Authorization: []
+                - refresh-token: []
+            tags:
+                - Statuts
+            summary: Créer un nouveau statut
+            parameters:
+                - in: query
+                  name: libelle
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: couleur
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Statut créé avec succès
+                "500":
+                    description: Erreur lors de la création du statut
+
+    /statuts/{id}:
+        patch:
+            security:
+                - Authorization: []
+                - refresh-token: []
+            tags:
+                - Statuts
+            summary: Mettre à jour un statut
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: integer
+                - in: query
+                  name: libelle
+                  schema:
+                      type: string
+                - in: query
+                  name: couleur
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Statut mis à jour avec succès
+                "400":
+                    description: L'id du statut est requis ou aucun champ à mettre à jour.
+                "404":
+                    description: Statut non trouvé.
+                "500":
+                    description: Erreur lors de la mise à jour du statut
+
+        delete:
+            security:
+                - Authorization: []
+                - refresh-token: []
+            tags:
+                - Statuts
+            summary: Supprimer un statut
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: Statut supprimé avec succès
+                "400":
+                    description: L'id du statut est requis.
+                "404":
+                    description: Statut non trouvé.
+                "500":
+                    description: Erreur lors de la suppression du statut
+
+    /permissions:
+        get:
+            security:
+                - Authorization: []
+                - refresh-token: []
+            tags:
+                - Permissions
+            summary: Obtenir la liste des permissions
+            parameters:
+                - in: query
+                  name: id
+                  schema:
+                      type: integer
+                - in: query
+                  name: libelle
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Liste des permissions
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    permissions:
+                                        type: array
+                                        items:
+                                            $ref: "#/components/schemas/Permission"
+                "500":
+                    description: Erreur lors de la récupération des permissions
+
+        post:
+            security:
+                - Authorization: []
+                - refresh-token: []
+            tags:
+                - Permissions
+            summary: Créer une nouvelle permission
+            parameters:
+                - in: query
+                  name: libelle
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Permission créée avec succès
+                "500":
+                    description: Erreur lors de la création de la permission
+
+    /permissions/{id}:
+        patch:
+            security:
+                - Authorization: []
+                - refresh-token: []
+            tags:
+                - Permissions
+            summary: Mettre à jour une permission
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: integer
+                - in: query
+                  name: libelle
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Permission mise à jour avec succès
+                "400":
+                    description: L'id de la permission est requis ou aucun champ à mettre à jour.
+                "404":
+                    description: Permission non trouvée.
+                "500":
+                    description: Erreur lors de la mise à jour de la permission
+
+        delete:
+            security:
+                - Authorization: []
+                - refresh-token: []
+            tags:
+                - Permissions
+            summary: Supprimer une permission
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: Permission supprimée avec succès
+                "400":
+                    description: L'id de la permission est requis.
+                "404":
+                    description: Permission non trouvée.
+                "500":
+                    description: Erreur lors de la suppression de la permission
+
+components:
+    schemas:
+        Utilisateur:
+            type: object
+            properties:
+                id:
+                    type: integer
                 nom:
-                  type: string
-                age:
-                  type: integer
-      responses:
-        '201':
-          description: Utilisateur créé avec succès
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  nom:
                     type: string
-                  age:
-                    type: integer
-  /utilisateurs/{id}:
-    get:
-      summary: Récupérer un utilisateur par ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: ID de l'utilisateur à récupérer
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Utilisateur récupéré avec succès
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  nom:
+                prenom:
                     type: string
-                  age:
-                    type: integer
-        '404':
-          description: Utilisateur non trouvé
-    put:
-      summary: Mettre à jour un utilisateur par ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: ID de l'utilisateur à mettre à jour
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                nom:
-                  type: string
-                age:
-                  type: integer
-      responses:
-        '200':
-          description: Utilisateur mis à jour avec succès
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  nom:
+                email:
                     type: string
-                  age:
+                login:
+                    type: string
+                password:
+                    type: string
+                    format: password
+                id_role:
                     type: integer
-        '404':
-          description: Utilisateur non trouvé
-    delete:
-      summary: Supprimer un utilisateur par ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: ID de l'utilisateur à supprimer
-          schema:
-            type: integer
-      responses:
-        '204':
-          description: Utilisateur supprimé avec succès
+                token:
+                    type: string
+                refreshToken:
+                    type: string
+        Ticket:
+            type: object
+            properties:
+                id:
+                    type: integer
+                titre:
+                    type: string
+                description:
+                    type: string
+                date_creation:
+                    type: string
+                    format: date-time
+                id_utilisateur_demandeur:
+                    type: integer
+                id_utilisateur_technicien:
+                    type: integer
+                id_statut:
+                    type: integer
+                date_derniere_modif:
+                    type: string
+                    format: date-time
+                date_cloture:
+                    type: string
+                    format: date-time
+        Role:
+            type: object
+            properties:
+                id:
+                    type: integer
+                libelle:
+                    type: string
+        Statut:
+            type: object
+            properties:
+                id:
+                    type: integer
+                libelle:
+                    type: string
+                couleur:
+                    type: string
+                    pattern: ^#[0-9a-fA-F]{6}$
+        Permission:
+            type: object
+            properties:
+                id:
+                    type: integer
+                libelle:
+                    type: string
+
+    securitySchemes:
+        Authorization:
+            name: Authorization
+            type: apiKey
+            in: header
+        refresh-token:
+            name: refresh-token
+            type: apiKey
+            in: header

@@ -5,6 +5,7 @@ import { useAuth } from './AuthContext';
 import { useNavigate } from 'react-router-dom';
 import ticket_img from '../assets/icons/add.svg'
 import back from '../assets/icons/back.svg'
+import API_BASE_URL from './config';
 
 function Tickets() {
     const [tickets, setTickets] = useState([]);
@@ -26,7 +27,7 @@ function Tickets() {
         try {
             const token = localStorage.getItem('token');
             const refreshToken = localStorage.getItem('refreshtoken');
-            let url = 'http://localhost:5000/tickets';
+            let url = API_BASE_URL + '/tickets';
 
             if (sort_column) {
                 url += `?sort=${sort_column}`;
@@ -111,7 +112,7 @@ function Tickets() {
         try {
             const token = localStorage.getItem('token');
             const refreshToken = localStorage.getItem('refreshtoken');
-            const url = `http://localhost:5000/utilisateurs?id=${userId}`;
+            const url = `${API_BASE_URL}/utilisateurs?id=${userId}`;
 
             const response = await fetch(url, {
                 method: 'GET',
@@ -164,7 +165,7 @@ function Tickets() {
         try {
             const token = localStorage.getItem('token');
             const refreshToken = localStorage.getItem('refreshtoken');
-            const url = `http://localhost:5000/statuts?id=${statutId}`;
+            const url = `${API_BASE_URL}/statuts?id=${statutId}`;
 
             const response = await fetch(url, {
                 method: 'GET',
@@ -241,8 +242,8 @@ function Tickets() {
                         <img className='add__button' src={ticket_img} />
                     </div>
                 </div>
-                <div className='tickets__top-section-container'>
-                    <div className="tickets__filter-container">
+                <div className='top-section-container'>
+                    <div className="filter-container">
                         <div className='input-group input__group__block'>
                             <label>Catégorie </label>
                             <select className="input__select" value={filterField} onChange={handleFilterFieldChange}>
@@ -282,18 +283,18 @@ function Tickets() {
                     </div>
                 </div>
                 {selectedFilters.length > 0 && (
-                    <div className="tickets__top-section-container">
-                        <div className="tickets__filter-container j__start">
+                    <div className="top-section-container">
+                        <div className="filter-container j__start">
                             {selectedFilters.map((filter, index) => (
-                                <div key={index} className="tickets__filter-item">
+                                <div key={index} className="filter-item">
                                     <span>{filter.field}: {filter.value}</span>
                                 </div>
                             ))}
                             <button className='input__button m__initial' onClick={() => setSelectedFilters([])}>Effacer les filtres</button>
                         </div>
                     </div>)}
-                <div className='tickets__table-container'>
-                    <div className="tickets__table">
+                <div className='table-container'>
+                    <div className="table">
                         {isLoading ? ( // Vérifier si le chargement est en cours
                             <p className='t__center'>Chargement des tickets...</p>
                         ) : tickets.length === 0 ? ( // Vérifier si la liste est vide
@@ -317,12 +318,11 @@ function Tickets() {
                                             className='pointer'
                                             onClick={openDetail}
                                             key={ticket._id}
-                                            // Copier la ligne dessous pour faire des pastilles de couleur
-                                            style={statut_color[ticket._id_statut] !== null ? { backgroundColor: hexToRgb(statut_color[ticket._id_statut], 0.5) } : {}}
+                                        // Copier la ligne dessous pour faire des pastilles de couleur
                                         >
                                             <td>{ticket._id}</td>
                                             <td>{ticket._titre}</td>
-                                            <td>{statut[ticket._id_statut] || 'Chargement...'}</td>
+                                            <td><p className='tag' style={statut_color[ticket._id_statut] !== null ? { backgroundColor: hexToRgb(statut_color[ticket._id_statut], 0.5) } : {}}>{statut[ticket._id_statut] || 'Chargement...'}</p></td>
                                             <td>{new Date(ticket._date_derniere_modif).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
                                             <td>{new Date(ticket._date_creation).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
                                             <td>{userNames[ticket._id_utilisateur_demandeur] || 'Chargement...'}</td>

@@ -5,6 +5,7 @@ import { useAuth } from './AuthContext';
 import { useNavigate } from 'react-router-dom';
 import add from '../assets/icons/add.svg';
 import back from '../assets/icons/back.svg';
+import API_BASE_URL from './config';
 
 function Statuts() {
     const [statuts, setStatuts] = useState([]);
@@ -26,7 +27,7 @@ function Statuts() {
         try {
             const token = localStorage.getItem('token');
             const refreshToken = localStorage.getItem('refreshtoken');
-            let url = 'http://localhost:5000/statuts';
+            let url = API_BASE_URL + '/statuts';
 
             if (selectedFilters.length > 0) {
                 const filterParams = selectedFilters.map(filter => `${filter.field}=${encodeURIComponent(filter.value)}`);
@@ -107,7 +108,7 @@ function Statuts() {
     return (
         <div className="container-page">
             <Header />
-            <div className="tickets__container-page">
+            <div className="statuts__container-page">
                 <div className='top__header-page'>
                     <a href="/home">
                         <img className='back__button' src={back} />
@@ -117,8 +118,8 @@ function Statuts() {
                         <img className='add__button' src={add} />
                     </div>
                 </div>
-                <div className='tickets__top-section-container'>
-                    <div className="tickets__filter-container">
+                <div className='top-section-container'>
+                    <div className="filter-container">
                         <div className='input-group input__group__block'>
                             <label>Catégorie </label>
                             <select className="input__select" value={filterField} onChange={handleFilterFieldChange}>
@@ -144,18 +145,18 @@ function Statuts() {
                     </div>
                 </div>
                 {selectedFilters.length > 0 && (
-                    <div className="tickets__top-section-container">
-                        <div className="tickets__filter-container j__start">
+                    <div className="top-section-container">
+                        <div className="filter-container j__start">
                             {selectedFilters.map((filter, index) => (
-                                <div key={index} className="tickets__filter-item">
+                                <div key={index} className="filter-item">
                                     <span>{filter.field}: {filter.value}</span>
                                 </div>
                             ))}
                             <button className='input__button m__initial' onClick={() => setSelectedFilters([])}>Effacer les filtres</button>
                         </div>
                     </div>)}
-                <div className='tickets__table-container'>
-                    <div className="tickets__table">
+                <div className='table-container'>
+                    <div className="table">
                         {isLoading ? ( // Vérifier si le chargement est en cours
                             <p className='t__center'>Chargement des statuts...</p>
                         ) : statuts.length === 0 ? (

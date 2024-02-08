@@ -6,6 +6,7 @@ import moment from 'moment-timezone';
 import Header from './Header';
 import home from '../assets/icons/home.svg'
 import back from '../assets/icons/back.svg'
+import API_BASE_URL from './config';
 
 function CreateTicket() {
     const [titre, setTitle] = useState('');
@@ -39,7 +40,7 @@ function CreateTicket() {
         try {
             const token = localStorage.getItem('token');
             const refreshToken = localStorage.getItem('refreshtoken');
-            const url = 'http://localhost:5000/utilisateurs';
+            const url = API_BASE_URL + '/utilisateurs';
 
             const response = await fetch(url, {
                 method: 'GET',
@@ -70,7 +71,7 @@ function CreateTicket() {
         try {
             const token = localStorage.getItem("token");
             const refreshToken = localStorage.getItem("refreshtoken");
-            const url = "http://localhost:5000/statuts";
+            const url = API_BASE_URL + "/statuts";
 
             const response = await fetch(url, {
                 method: "GET",
@@ -118,7 +119,7 @@ function CreateTicket() {
             const queryParams = new URLSearchParams(newTicket);
 
             // Créez l'URL de la requête en ajoutant les paramètres de requête
-            const url = `http://localhost:5000/tickets?${queryParams.toString()}`;
+            const url = `${API_BASE_URL}/tickets?${queryParams.toString()}`;
 
             console.log("URL : " + url);
 
@@ -156,7 +157,7 @@ function CreateTicket() {
                         <img className='home__button' src={home} />
                     </a>
                 </div>
-                <div className='create-ticket__form-container'>
+                <div className='form-container'>
                     <form onSubmit={handleSubmit}>
                         <div className="input-group">
                             <label htmlFor="titre">Titre :</label>

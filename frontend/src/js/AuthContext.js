@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import API_BASE_URL from './config';
 
 const AuthContext = createContext();
 
@@ -19,7 +20,7 @@ export const AuthProvider = ({ children }) => {
                     return;
                 }
 
-                const response = await fetch(`http://localhost:5000/verifyToken`, {
+                const response = await fetch(`${API_BASE_URL}/verifyToken`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -62,7 +63,7 @@ export const AuthProvider = ({ children }) => {
             const token = localStorage.getItem('token');
             const refreshToken = localStorage.getItem('refreshtoken');
 
-            const response = await fetch(`http://localhost:5000/utilisateurs/logout/${id}`, {
+            const response = await fetch(`${API_BASE_URL}/utilisateurs/logout/${id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

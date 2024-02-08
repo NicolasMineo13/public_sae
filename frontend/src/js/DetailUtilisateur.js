@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Header from "./Header";
 import home from '../assets/icons/home.svg';
 import back from '../assets/icons/back.svg';
+import API_BASE_URL from './config';
 
 function DetailUtilisateur() {
     const [nom, setNom] = useState('');
@@ -70,7 +71,7 @@ function DetailUtilisateur() {
             const queryParams = new URLSearchParams(updatedFields);
 
             // Ajoutez les paramètres de requête à l'URL
-            const patchUrl = `http://localhost:5000/utilisateurs/${id}?${queryParams.toString()}`;
+            const patchUrl = `${API_BASE_URL}/utilisateurs/${id}?${queryParams.toString()}`;
 
             // Obtenez le jeton d'accès et le jeton de rafraîchissement du stockage local
             const token = localStorage.getItem('token');
@@ -103,7 +104,7 @@ function DetailUtilisateur() {
 
         const token = localStorage.getItem('token');
         const refreshToken = localStorage.getItem('refreshtoken');
-        const url = `http://localhost:5000/utilisateurs/${id}`;
+        const url = `${API_BASE_URL}/utilisateurs/${id}`;
         const response = await fetch(url, {
             method: 'DELETE',
             headers: {
@@ -126,7 +127,7 @@ function DetailUtilisateur() {
         try {
             const token = localStorage.getItem("token");
             const refreshToken = localStorage.getItem("refreshtoken");
-            const url = "http://localhost:5000/roles";
+            const url = API_BASE_URL + "/roles";
 
             const response = await fetch(url, {
                 method: "GET",
@@ -157,7 +158,7 @@ function DetailUtilisateur() {
         try {
             const token = localStorage.getItem("token");
             const refreshToken = localStorage.getItem("refreshtoken");
-            const url = "http://localhost:5000/utilisateurs?id=" + id;
+            const url = API_BASE_URL + "/utilisateurs?id=" + id;
 
             const response = await fetch(url, {
                 method: "GET",
@@ -203,7 +204,7 @@ function DetailUtilisateur() {
     return (
         <div className="container-page">
             <Header />
-            <div className="create-utilisateur__container-page">
+            <div className="detail-utilisateur__container-page">
                 <div className="top__header-page">
                     <a href="/utilisateurs">
                         <img className='back__button' src={back} />
@@ -213,7 +214,7 @@ function DetailUtilisateur() {
                         <img className='home__button' src={home} />
                     </a>
                 </div>
-                <div className="create-utilisateur__form-container">
+                <div className="form-container">
                     <form onSubmit={handleUpdate}>
                         <div className="input-group">
                             <label htmlFor="nom">Nom :</label>
@@ -258,7 +259,7 @@ function DetailUtilisateur() {
                             <label htmlFor="role">Rôle :</label>
                             <select
                                 id="role"
-                                className="input__select"
+                                className="input__select w__100"
                                 value={update_role}
                                 onChange={(e) => update_setRole(e.target.value)}
                             >

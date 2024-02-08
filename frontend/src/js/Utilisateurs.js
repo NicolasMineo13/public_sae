@@ -5,6 +5,7 @@ import { useAuth } from './AuthContext';
 import { useNavigate } from 'react-router-dom';
 import ticket_img from '../assets/icons/add.svg';
 import back from '../assets/icons/back.svg';
+import API_BASE_URL from './config';
 
 function Utilisateurs() {
     const [utilisateurs, setUtilisateurs] = useState([]);
@@ -26,7 +27,7 @@ function Utilisateurs() {
         try {
             const token = localStorage.getItem('token');
             const refreshToken = localStorage.getItem('refreshtoken');
-            let url = 'http://localhost:5000/utilisateurs';
+            let url = API_BASE_URL + '/utilisateurs';
 
             if (selectedFilters.length > 0) {
                 const filterParams = selectedFilters.map(filter => `${filter.field}=${encodeURIComponent(filter.value)}`);
@@ -105,7 +106,7 @@ function Utilisateurs() {
         try {
             const token = localStorage.getItem('token');
             const refreshToken = localStorage.getItem('refreshtoken');
-            const url = `http://localhost:5000/roles?id=${roleId}`;
+            const url = `${API_BASE_URL}/roles?id=${roleId}`;
 
             const response = await fetch(url, {
                 method: 'GET',
@@ -164,8 +165,8 @@ function Utilisateurs() {
                         <img className='add__button' src={ticket_img} />
                     </div>
                 </div>
-                <div className="utilisateurs__top-section-container">
-                    <div className='utilisateurs__filter-container'>
+                <div className="top-section-container">
+                    <div className='filter-container'>
                         <div className='input-group input__group__block'>
                             <label>Catégorie</label>
                             <select className="input__select" value={filterField} onChange={handleFilterFieldChange}>
@@ -194,18 +195,18 @@ function Utilisateurs() {
                     </div>
                 </div>
                 {selectedFilters.length > 0 && (
-                    <div className="utilisateurs__top-section-container">
-                        <div className="utilisateurs__filter-container j__start">
+                    <div className="top-section-container">
+                        <div className="filter-container j__start">
                             {selectedFilters.map((filter, index) => (
-                                <div key={index} className="utilisateurs__filter-item">
+                                <div key={index} className="filter-item">
                                     {filter.field}: {filter.value}
                                 </div>
                             ))}
                             <button className='input__button' onClick={() => setSelectedFilters([])}>Effacer les filtres</button>
                         </div>
                     </div>)}
-                <div className='utilisateurs__table-container'>
-                    <div className="utilisateurs__table">
+                <div className='table-container'>
+                    <div className="table">
                         {isLoading ? ( // Vérifier si le chargement est en cours
                             <p className='t__center'>Chargement des utilisateurs...</p>
                         ) : utilisateurs.length === 0 ? (

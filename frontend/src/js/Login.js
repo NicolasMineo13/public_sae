@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../scss/app.scss'
+import API_BASE_URL from './config';
 
 function Login() {
     const [login, setLogin] = useState('');
@@ -10,7 +11,7 @@ function Login() {
 
     const handleLogin = async () => {
         const queryParams = new URLSearchParams({ login, password });
-        const url = `http://localhost:5000/utilisateurs/login?${queryParams}`;
+        const url = `${API_BASE_URL}/utilisateurs/login?${queryParams}`;
 
         try {
             const response = await fetch(url, {

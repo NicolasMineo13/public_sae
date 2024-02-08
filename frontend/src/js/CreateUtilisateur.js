@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from './Header';
 import home from '../assets/icons/home.svg';
 import back from '../assets/icons/back.svg'
+import API_BASE_URL from './config';
 
 function CreateUtilisateur() {
     const [nom, setNom] = useState('');
@@ -30,7 +31,7 @@ function CreateUtilisateur() {
         try {
             const token = localStorage.getItem("token");
             const refreshToken = localStorage.getItem("refreshtoken");
-            const url = "http://localhost:5000/roles";
+            const url = API_BASE_URL + "/roles";
 
             const response = await fetch(url, {
                 method: "GET",
@@ -77,7 +78,7 @@ function CreateUtilisateur() {
             const queryParams = new URLSearchParams(newUtilisateur);
 
             // Créez l'URL de la requête en ajoutant les paramètres de requête
-            const url = `http://localhost:5000/utilisateurs?${queryParams.toString()}`;
+            const url = `${API_BASE_URL}/utilisateurs?${queryParams.toString()}`;
 
             const response = await fetch(url, {
                 method: 'POST',
@@ -113,7 +114,7 @@ function CreateUtilisateur() {
                         <img className='home__button' src={home} />
                     </a>
                 </div>
-                <div className='create-utilisateur__form-container'>
+                <div className='form-container'>
                     <form onSubmit={handleSubmit}>
                         <div className="input-group">
                             <label htmlFor="nom">Nom :</label>

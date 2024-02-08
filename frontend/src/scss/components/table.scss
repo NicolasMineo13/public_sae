@@ -1,0 +1,40 @@
+.table-container {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	.table {
+		box-shadow: 0rem 0.3125rem 0.3125rem 0rem rgba(82, 63, 105, 0.05);
+		width: 80%;
+		background-color: white;
+		padding: 10px;
+		border-radius: 10px;
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			tr {
+				height: 50px;
+				border-bottom: 1px solid #939393;
+				td {
+					color: #939393;
+					text-align: center;
+					.tag {
+						border-radius: 10px;
+						color: white;
+						font-weight: 600;
+					}
+				}
+			}
+			tbody {
+				tr:hover {
+					background-color: #dfdfdf;
+				}
+			}
+			thead {
+				tr:hover {
+					background-color: none;
+				}
+			}
+		}
+	}
+}

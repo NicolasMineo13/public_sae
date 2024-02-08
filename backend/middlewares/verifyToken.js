@@ -1,8 +1,5 @@
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-import { getDatabaseInstance } from "../db.js";
-
-dotenv.config({ path: "./secretKey.env" });
+import { getDatabasePool } from "../db.js";
 
 const verifyToken = async (req, res, next) => {
     const token = req.headers.authorization;
@@ -16,15 +13,18 @@ const verifyToken = async (req, res, next) => {
         return res.status(403).json({ error: "Refresh token manquant" });
     }
 
-    const db = await getDatabaseInstance();
+    const pool = await getDatabasePool();
 
     try {
+        const db = await pool.getConnection();
+
         const [blacklist] = await db.execute(
             "SELECT * FROM tokensblacklist WHERE token = ?",
             [token]
         );
 
-        if (blacklist && blacklist.lenght > 0) {
+        if (blacklist && blacklist.length > 0) {
+            db.release();
             return res.status(403).json({ error: "Token invalide" });
         }
 
@@ -33,13 +33,15 @@ const verifyToken = async (req, res, next) => {
             [refreshToken]
         );
 
-        if (blacklistRefresh && blacklistRefresh.lenght > 0) {
+        if (blacklistRefresh && blacklistRefresh.length > 0) {
+            db.release();
             return res.status(403).json({ error: "Refresh token invalide" });
         }
 
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
             req.user = decoded;
+            db.release();
             next();
         } catch (error) {
             if (error.name === "TokenExpiredError") {
@@ -69,10 +71,12 @@ const verifyToken = async (req, res, next) => {
 
                     return res.status(200).json({ status: true, token: newToken });
                 } catch (refreshError) {
+                    db.release();
                     console.error("Erreur de vérification du token de rafraîchissement :", refreshError.message);
                     return res.status(401).json({ error: refreshError.message });
                 }
             } else {
+                db.release();
                 return res.status(401).json({ error: error.message });
             }
         }

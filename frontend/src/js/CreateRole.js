@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from './Header';
 import back from '../assets/icons/back.svg';
 import home from '../assets/icons/home.svg';
+import API_BASE_URL from './config';
 
 function CreateRole() {
     const [libelle, setLibelle] = useState('');
@@ -31,7 +32,7 @@ function CreateRole() {
             const queryParams = new URLSearchParams(newRole);
 
             // Créez l'URL de la requête en ajoutant les paramètres de requête
-            const url = `http://localhost:5000/roles?${queryParams.toString()}`;
+            const url = `${API_BASE_URL}/roles?${queryParams.toString()}`;
 
             const response = await fetch(url, {
                 method: 'POST',
@@ -57,7 +58,7 @@ function CreateRole() {
     return (
         <div className="container-page">
             <Header />
-            <div className="create-ticket__container-page">
+            <div className="create-role__container-page">
                 <div className='top__header-page'>
                     <a href="/roles">
                         <img className='back__button' src={back} />
@@ -67,7 +68,7 @@ function CreateRole() {
                         <img className='home__button' src={home} />
                     </a>
                 </div>
-                <div className='create-ticket__form-container'>
+                <div className='form-container'>
                     <form onSubmit={handleSubmit}>
                         <div className="input-group">
                             <label htmlFor="libelle">Libellé :</label>

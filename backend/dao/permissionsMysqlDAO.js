@@ -1,15 +1,17 @@
 import { PermissionsDAO } from "./permissionsDAO.js";
-import { getDatabaseInstance } from "../db.js";
+import { getDatabasePool } from "../db.js";
 
 export class PermissionsMysqlDAO extends PermissionsDAO {
     constructor() {
         super();
-        this.db = getDatabaseInstance();
+        this.pool = getDatabasePool();
     }
 
     async getPermissions(filter) {
         try {
-            const db = await this.db;
+            const pool = await this.pool;
+            const db = await pool.getConnection();
+
             const conditions = [];
             const params = [];
 
@@ -30,6 +32,7 @@ export class PermissionsMysqlDAO extends PermissionsDAO {
             }
 
             const [results] = await db.execute(query, params);
+            db.release();
             return results;
         } catch (error) {
             console.error("Erreur lors de la récupération des permissions :", error);
@@ -39,9 +42,11 @@ export class PermissionsMysqlDAO extends PermissionsDAO {
 
     async createPermission(libelle) {
         try {
-            const db = await this.db;
+            const pool = await this.pool;
+            const db = await pool.getConnection();
 
             if (!libelle) {
+                db.release();
                 throw new Error("Paramètres manquants");
             }
 
@@ -50,6 +55,7 @@ export class PermissionsMysqlDAO extends PermissionsDAO {
                 [libelle]
             );
 
+            db.release();
             return result.insertId;
         }
         catch (error) {
@@ -60,7 +66,8 @@ export class PermissionsMysqlDAO extends PermissionsDAO {
 
     async updatePermission(id, updatedFields) {
         try {
-            const db = await this.db;
+            const pool = await this.pool;
+            const db = await pool.getConnection();
 
             const { libelle } = updatedFields;
 
@@ -79,8 +86,10 @@ export class PermissionsMysqlDAO extends PermissionsDAO {
             const result = await db.execute(query, params);
 
             if (result[0].affectedRows > 0) {
+                db.release();
                 return true; // Mise à jour réussie
             } else {
+                db.release();
                 return false; // Aucun permission mis à jour (id non trouvé)
             }
         }
@@ -93,11 +102,15 @@ export class PermissionsMysqlDAO extends PermissionsDAO {
 
     async deletePermission(id) {
         try {
-            const db = await this.db;
+            const pool = await this.pool;
+            const db = await pool.getConnection();
+
             const result = await db.execute("DELETE FROM permissions WHERE id = ?", [id]);
             if (result[0].affectedRows > 0) {
+                db.release();
                 return true; // Suppression réussie
             } else {
+                db.release();
                 return false; // Aucun permission supprimé (id non trouvé)
             }
         }

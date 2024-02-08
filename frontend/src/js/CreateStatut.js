@@ -6,6 +6,7 @@ import { ChromePicker } from 'react-color';
 import Header from './Header';
 import back from '../assets/icons/back.svg';
 import home from '../assets/icons/home.svg';
+import API_BASE_URL from './config';
 
 function CreateStatut() {
     const [libelle, setLibelle] = useState('');
@@ -34,7 +35,7 @@ function CreateStatut() {
             const queryParams = new URLSearchParams(newStatut);
 
             // Créez l'URL de la requête en ajoutant les paramètres de requête
-            const url = `http://localhost:5000/statuts?${queryParams.toString()}`;
+            const url = `${API_BASE_URL}/statuts?${queryParams.toString()}`;
 
             const response = await fetch(url, {
                 method: 'POST',
@@ -64,7 +65,7 @@ function CreateStatut() {
     return (
         <div className="container-page">
             <Header />
-            <div className="create-ticket__container-page">
+            <div className="create-statut__container-page">
                 <div className='top__header-page'>
                     <a href="/statuts">
                         <img className='back__button' src={back} />
@@ -74,7 +75,7 @@ function CreateStatut() {
                         <img className='home__button' src={home} />
                     </a>
                 </div>
-                <div className='create-ticket__form-container'>
+                <div className='form-container'>
                     <form onSubmit={handleSubmit}>
                         <div className="input-group">
                             <label htmlFor="libelle">Libellé :</label>

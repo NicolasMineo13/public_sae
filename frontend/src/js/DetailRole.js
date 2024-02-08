@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Header from "./Header";
 import home from '../assets/icons/home.svg';
 import back from '../assets/icons/back.svg';
+import API_BASE_URL from './config';
 
 function DetailRole() {
     const [libelle, setLibelle] = useState('');
@@ -42,7 +43,7 @@ function DetailRole() {
             const queryParams = new URLSearchParams(updatedFields);
 
             // Ajoutez les paramètres de requête à l'URL
-            const patchUrl = `http://localhost:5000/roles/${id}?${queryParams.toString()}`;
+            const patchUrl = `${API_BASE_URL}/roles/${id}?${queryParams.toString()}`;
 
             // Obtenez le jeton d'accès et le jeton de rafraîchissement du stockage local
             const token = localStorage.getItem('token');
@@ -75,7 +76,7 @@ function DetailRole() {
 
         const token = localStorage.getItem('token');
         const refreshToken = localStorage.getItem('refreshtoken');
-        const url = `http://localhost:5000/roles/${id}`;
+        const url = `${API_BASE_URL}/roles/${id}`;
         const response = await fetch(url, {
             method: 'DELETE',
             headers: {
@@ -98,7 +99,7 @@ function DetailRole() {
         try {
             const token = localStorage.getItem("token");
             const refreshToken = localStorage.getItem("refreshtoken");
-            const url = "http://localhost:5000/roles?id=" + id;
+            const url = API_BASE_URL + "/roles?id=" + id;
 
             const response = await fetch(url, {
                 method: "GET",
@@ -133,7 +134,7 @@ function DetailRole() {
     return (
         <div className="container-page">
             <Header />
-            <div className="create-ticket__container-page">
+            <div className="detail-role__container-page">
                 <div className="top__header-page">
                     <a href="/roles">
                         <img className='back__button' src={back} />
@@ -143,7 +144,7 @@ function DetailRole() {
                         <img className='home__button' src={home} />
                     </a>
                 </div>
-                <div className="create-ticket__form-container">
+                <div className="form-container">
                     <form onSubmit={handleUpdate}>
                         <div className="input-group">
                             <label htmlFor="libelle">Libellé :</label>

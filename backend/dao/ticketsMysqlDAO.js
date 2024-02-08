@@ -1,15 +1,17 @@
 import { TicketsDAO } from "./ticketsDAO.js";
-import { getDatabaseInstance } from "../db.js";
+import { getDatabasePool } from "../db.js";
 
 export class TicketsMysqlDAO extends TicketsDAO {
     constructor() {
         super();
-        this.db = getDatabaseInstance();
+        this.pool = getDatabasePool();
     }
 
     async getTickets(filter) {
         try {
-            const db = await this.db;
+            const pool = await this.pool;
+            const db = await pool.getConnection();
+
             const conditions = [];
             const params = [];
 
@@ -112,6 +114,7 @@ export class TicketsMysqlDAO extends TicketsDAO {
             }
 
             const [results] = await db.execute(query, params);
+            db.release();
             return results;
         } catch (error) {
             // Gérer les erreurs (journalisation, rejet, etc.)
@@ -122,13 +125,15 @@ export class TicketsMysqlDAO extends TicketsDAO {
 
     async createTicket(titre, description, date_creation, id_utilisateur_demandeur, id_utilisateur_technicien, id_statut) {
         try {
-            const db = await this.db;
+            const pool = await this.pool;
+            const db = await pool.getConnection();
 
             if (!id_utilisateur_technicien) {
                 id_utilisateur_technicien = null;
             }
 
             if (!titre || !description || !date_creation || !id_utilisateur_demandeur || !id_statut) {
+                db.release();
                 throw new Error("Paramètres manquants");
             }
 
@@ -137,6 +142,7 @@ export class TicketsMysqlDAO extends TicketsDAO {
                 [titre, description, date_creation, id_utilisateur_demandeur, id_utilisateur_technicien, id_statut, date_creation, null]
             );
 
+            db.release();
             return result.insertId;
         }
         catch (error) {
@@ -147,7 +153,8 @@ export class TicketsMysqlDAO extends TicketsDAO {
 
     async updateTicket(id, updatedFields) {
         try {
-            const db = await this.db;
+            const pool = await this.pool;
+            const db = await pool.getConnection();
 
             const { titre, description, date_creation, id_utilisateur_demandeur, id_utilisateur_technicien, id_statut, date_cloture } = updatedFields;
 
@@ -201,8 +208,10 @@ export class TicketsMysqlDAO extends TicketsDAO {
             const result = await db.execute(query, params);
 
             if (result[0].affectedRows > 0) {
+                db.release();
                 return true; // Mise à jour réussie
             } else {
+                db.release();
                 return false; // Aucun ticket mis à jour (id non trouvé)
             }
         }
@@ -215,11 +224,15 @@ export class TicketsMysqlDAO extends TicketsDAO {
 
     async deleteTicket(id) {
         try {
-            const db = await this.db;
+            const pool = await this.pool;
+            const db = await pool.getConnection();
+
             const result = await db.execute("DELETE FROM tickets WHERE id = ?", [id]);
             if (result[0].affectedRows > 0) {
+                db.release();
                 return true; // Suppression réussie
             } else {
+                db.release();
                 return false; // Aucun ticket supprimé (id non trouvé)
             }
         }
