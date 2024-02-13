@@ -60,13 +60,13 @@ function CreateRole() {
             <Header />
             <div className="create-role__container-page">
                 <div className='top__header-page'>
-                    <a href="/roles">
+                    <div onClick={() => navigate("/roles")}>
                         <img className='back__button' src={back} />
-                    </a>
+                    </div>
                     <h1>Créer un Role</h1>
-                    <a className='m__initial' href="/home">
+                    <div className='m__initial' onClick={() => navigate("/home")}>
                         <img className='home__button' src={home} />
-                    </a>
+                    </div>
                 </div>
                 <div className='form-container'>
                     <form onSubmit={handleSubmit}>

@@ -47,7 +47,7 @@ const verifyToken = async (req, res, next) => {
             if (error.name === "TokenExpiredError") {
                 try {
                     const decodedRefresh = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-                    const newToken = jwt.sign({ userId: decodedRefresh.userId, login: decodedRefresh.login }, process.env.JWT_SECRET_KEY, { expiresIn: "15m" });
+                    const newToken = jwt.sign({ userId: decodedRefresh.userId, login: decodedRefresh.login }, process.env.JWT_SECRET_KEY, { expiresIn: "1d" });
 
                     const [oldTokenRow] = await db.execute("SELECT token FROM utilisateurs WHERE id = ?", [decodedRefresh.userId]);
 

@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Header from "./Header";
 import home from '../assets/icons/home.svg';
 import back from '../assets/icons/back.svg';
+import deleteIcon from '../assets/icons/delete.svg';
 import API_BASE_URL from './config';
 
 function DetailTicket() {
@@ -24,21 +25,92 @@ function DetailTicket() {
 
     const [users, setUsers] = useState([]); // State to store the list of users
     const [statuts, setStatuts] = useState([]); // State to store the list of users
+    const [reponses, setReponses] = useState([]); // State to store the list of users
+
+    const [clotureId, setClotureId] = useState('');
+    const [resoluId, setResoluId] = useState('');
 
     const navigate = useNavigate();
 
     const { isLoggedIn } = useAuth(); // Utilisez le hook useAuth pour obtenir la fonction isLoggedIn
 
+    const user_connected = localStorage.getItem("id");
+
     isLoggedIn(); // Appelez la fonction isLoggedIn pour vérifier si l'utilisateur est connecté
 
     useEffect(() => {
         // Fetch the list of users when the component mounts
+        fetchTicket();
         fetchUsers();
         fetchStatuts();
-        fetchTicket();
+        fetchReponses();
     }, []);
 
     const { id } = useParams();
+
+    const handleCreateReponse = () => {
+        navigate(`/tickets/reponses/${id}`);
+    };
+
+    const handleCreateSolution = () => {
+        navigate(`/tickets/solutions/${id}`);
+    };
+
+    const handleDeleteReponse = async (id_reponse) => {
+        const token = localStorage.getItem('token');
+        const refreshToken = localStorage.getItem('refreshtoken');
+        const url = `${API_BASE_URL}/reponses/${id_reponse}`;
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token,
+                'Refresh-Token': refreshToken,
+            },
+        });
+
+        // Si la suppression réussit, redirigez l'utilisateur
+        if (response.ok) {
+            fetchUsers();
+            fetchStatuts();
+            fetchTicket();
+            fetchReponses();
+        } else {
+            // Gérez les erreurs de la requête ici
+            console.error('Erreur lors de la suppression du ticket');
+        }
+    }
+
+    // Function to fetch responses
+    const fetchReponses = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const refreshToken = localStorage.getItem("refreshtoken");
+            const url = `${API_BASE_URL}/reponses?id_ticket=${id}`;
+
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": token,
+                    "Refresh-Token": refreshToken,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Error fetching responses");
+            }
+
+            const data = await response.json();
+            if (Array.isArray(data.reponses)) {
+                setReponses(data.reponses);
+            } else {
+                console.error("API response does not contain response information:", data);
+            }
+        } catch (error) {
+            console.error("Error fetching responses:", error);
+        }
+    };
 
     const handleUpdate = async (e) => {
         e.preventDefault();
@@ -128,8 +200,8 @@ function DetailTicket() {
     const handleCloture = async (e) => {
         e.preventDefault();
 
-        // Prendre l'id du statut 'clôturé'
-        const id_cloture = statuts.filter(statut => statut._libelle === 'Clôturé')[0]._id;
+        // Prendre l'id du statut 'Clos'
+        const id_cloture = statuts.filter(statut => statut._libelle === 'Clos')[0]._id;
 
         // Ajoutez les paramètres de requête à l'URL
         const patchUrl = `${API_BASE_URL}/tickets/${id}?id_statut=${id_cloture}`;
@@ -166,7 +238,7 @@ function DetailTicket() {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: token,
+                    "Authorization": token,
                     "Refresh-Token": refreshToken,
                 },
             });
@@ -197,7 +269,7 @@ function DetailTicket() {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: token,
+                    "Authorization": token,
                     "Refresh-Token": refreshToken,
                 },
             });
@@ -209,6 +281,8 @@ function DetailTicket() {
             const data = await response.json();
             if (Array.isArray(data.statuts)) {
                 setStatuts(data.statuts);
+                setClotureId(data.statuts.filter(statut => statut._libelle === 'Clos')[0]._id);
+                setResoluId(data.statuts.filter(statut => statut._libelle === 'Résolu')[0]._id);
             } else {
                 console.error("API response does not contain user information:", data);
             }
@@ -227,7 +301,7 @@ function DetailTicket() {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: token,
+                    "Authorization": token,
                     "Refresh-Token": refreshToken,
                 },
             });
@@ -268,125 +342,214 @@ function DetailTicket() {
             <Header />
             <div className="detail-ticket__container-page">
                 <div className="top__header-page">
-                    <a href="/tickets">
+                    <div onClick={() => navigate("/tickets")}>
                         <img className='back__button' src={back} />
-                    </a>
-                    <h1>Affichage du ticket N°{id} - {update_titre}</h1>
-                    <a className='m__initial' href="/home">
+                    </div>
+                    <h1>Affichage du ticket N°{id} - {titre}</h1>
+                    <div className='m__initial' onClick={() => navigate("/home")}>
                         <img className='home__button' src={home} />
-                    </a>
+                    </div>
                 </div>
-                <div className="form-container">
-                    <form onSubmit={handleUpdate}>
-                        <div className="input-group">
-                            <label htmlFor="titre">Titre :</label>
-                            <input
-                                className="input__text"
-                                type="text"
-                                id="titre"
-                                value={update_titre}
-                                onChange={(e) => update_setTitle(e.target.value)}
-                            />
-                        </div>
-                        <div className="input-group">
-                            <label htmlFor="description">Description :</label>
-                            <textarea
-                                className="input__text"
-                                id="description"
-                                value={update_description}
-                                onChange={(e) => update_setDescription(e.target.value)}
-                            />
-                        </div>
-                        <div className="input-group">
-                            <label htmlFor="date_creation">Date de Création :</label>
-                            <input
-                                className="input__text"
-                                type="datetime-local"
-                                id="date_creation"
-                                value={update_date_creation ? update_date_creation.slice(0, 16) : ""}
-                                onChange={(e) => update_setCreationDate(e.target.value)}
-                            />
-                        </div>
-                        <div className="input-group">
-                            <label htmlFor="id_utilisateur_demandeur">Demandeur :</label>
-                            <select
-                                id="id_utilisateur_demandeur"
-                                className="input__select w__100"
-                                value={update_id_utilisateur_demandeur}
-                                onChange={(e) => update_setDemandeur(e.target.value)}
-                            >
-                                <option value="" disabled>
-                                    Chosir un demandeur
-                                </option>
-                                {users.map((user) => (
-                                    <option
-                                        key={user._id}
-                                        value={user._id}
-                                    >
-                                        {`${user._prenom} ${user._nom}`}
+                <div className="details-response-container">
+                    <div className="ticket-info-container">
+                        <form onSubmit={handleUpdate}>
+                            <div className="input-group">
+                                <label htmlFor="titre">Titre :</label>
+                                <input
+                                    className="input__text"
+                                    type="text"
+                                    id="titre"
+                                    value={update_titre}
+                                    onChange={(e) => update_setTitle(e.target.value)}
+                                />
+                            </div>
+                            <div className="input-group">
+                                <label htmlFor="description">Description :</label>
+                                <textarea
+                                    className="input__text"
+                                    id="description"
+                                    value={update_description}
+                                    onChange={(e) => update_setDescription(e.target.value)}
+                                />
+                            </div>
+                            <div className="input-group">
+                                <label htmlFor="date_creation">Date de Création :</label>
+                                <input
+                                    className="input__text"
+                                    type="datetime-local"
+                                    id="date_creation"
+                                    value={update_date_creation ? update_date_creation.slice(0, 16) : ""}
+                                    onChange={(e) => update_setCreationDate(e.target.value)}
+                                />
+                            </div>
+                            <div className="input-group">
+                                <label htmlFor="id_utilisateur_demandeur">Demandeur :</label>
+                                <select
+                                    id="id_utilisateur_demandeur"
+                                    className="input__select w__100"
+                                    value={update_id_utilisateur_demandeur}
+                                    onChange={(e) => update_setDemandeur(e.target.value)}
+                                >
+                                    <option value="" disabled>
+                                        Chosir un demandeur
                                     </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="input-group">
-                            <label htmlFor="id_utilisateur_technicien">Technicien :</label>
-                            <select
-                                id="id_utilisateur_technicien"
-                                className="input__select w__100"
-                                value={update_id_utilisateur_technicien}
-                                onChange={(e) => update_setTechnicien(e.target.value)}
-                            >
-                                <option value="" disabled>
-                                    Chosir un technicien
-                                </option>
-                                {users.map((user) => (
-                                    <option
-                                        key={user._id}
-                                        value={user._id}
-                                    >
-                                        {`${user._prenom} ${user._nom}`}
+                                    {users.map((user) => (
+                                        <option
+                                            key={user._id}
+                                            value={user._id}
+                                        >
+                                            {`${user._prenom} ${user._nom}`}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="input-group">
+                                <label htmlFor="id_utilisateur_technicien">Technicien :</label>
+                                <select
+                                    id="id_utilisateur_technicien"
+                                    className="input__select w__100"
+                                    value={update_id_utilisateur_technicien}
+                                    onChange={(e) => update_setTechnicien(e.target.value)}
+                                >
+                                    <option value="" disabled>
+                                        Chosir un technicien
                                     </option>
-                                ))}
-                            </select>
+                                    {users.map((user) => (
+                                        <option
+                                            key={user._id}
+                                            value={user._id}
+                                        >
+                                            {`${user._prenom} ${user._nom}`}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="input-group">
+                                <label htmlFor="id_statut">Statut :</label>
+                                <select
+                                    id="id_statut"
+                                    className="input__select w__100"
+                                    value={update_id_statut}
+                                    onChange={(e) => update_setStatut(e.target.value)}
+                                >
+                                    <option value="" disabled>
+                                        Chosir un statut
+                                    </option>
+                                    {statuts.map((statut) => {
+                                        if (statut._libelle !== 'Clos' && statut._libelle !== 'Résolu' && update_id_statut !== clotureId && update_id_statut !== resoluId) {
+                                            return (
+                                                <option
+                                                    key={statut._id}
+                                                    value={statut._id}
+                                                >
+                                                    {`${statut._libelle}`}
+                                                </option>
+                                            );
+                                        } else if (statut._libelle == 'Clos' && update_id_statut == clotureId) {
+                                            return (
+                                                <option
+                                                    key={statut._id}
+                                                    value={statut._id}
+                                                >
+                                                    {`${statut._libelle}`}
+                                                </option>
+                                            );
+                                        } else if (statut._libelle == 'Résolu' && update_id_statut == resoluId) {
+                                            return (
+                                                <option
+                                                    key={statut._id}
+                                                    value={statut._id}
+                                                >
+                                                    {`${statut._libelle}`}
+                                                </option>
+                                            );
+                                        }
+                                        return null;
+                                    })}
+                                </select>
+                            </div>
+                            <div className="input-group">
+                                {update_id_statut !== clotureId && (
+                                    <button className="input__button w__100 j__center" type="submit">
+                                        Modifier
+                                    </button>
+                                )}
+                                <button className="input__button w__100 j__center" onClick={handleDelete}>
+                                    Supprimer
+                                </button>
+                                {update_id_statut !== clotureId && (
+                                    <button className="input__button w__100 j__center" onClick={handleCloture}>
+                                        Clôturer
+                                    </button>
+                                )}
+                            </div>
+                        </form>
+                    </div>
+                    <div className="response-info-container">
+                        {reponses.length === 0 && update_id_statut !== clotureId ? (
+                            <div className="reponse-other-container">
+                                <div className="reponse">
+                                    <span>Soyez le premier à répondre</span>
+                                </div>
+                            </div>
+                        ) : (
+                            reponses.map((response) => {
+                                const user_id_reponse = users.find((user) => user._id === response._id_utilisateur);
+                                const isDemandeur = user_id_reponse && user_id_reponse._id == id_utilisateur_demandeur;
+                                const containerClass = isDemandeur ? "reponse-container" : "reponse-other-container";
+                                const formattedDate = response._date_derniere_modif
+                                    ? new Date(response._date_derniere_modif).toLocaleString("fr-FR", {
+                                        day: "2-digit",
+                                        month: "2-digit",
+                                        year: "numeric",
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                    })
+                                    : "Date non valide";
+                                return (
+                                    <div key={response._id} className={containerClass}>
+                                        <div className="reponse">
+                                            <div className="header-response">
+                                                <div className="text">
+                                                    <span>{user_id_reponse ? `${user_id_reponse._prenom} ${user_id_reponse._nom}` : "Chargement en cours..."}</span>
+                                                    <span>{user_id_reponse && user_id_reponse._id === id_utilisateur_demandeur ? "(Demandeur)" : user_id_reponse && user_id_reponse._id === id_utilisateur_technicien ? "(Technicien)" : ""}</span>
+                                                    <span>Le : {formattedDate}</span>
+                                                    <span>{response._solution === 1 ? "Solution apportée" : ""}</span>
+                                                </div>
+                                                <div className="trash">
+                                                    <img className='back__button' src={deleteIcon} onClick={() => handleDeleteReponse(response._id)} />
+                                                </div>
+                                            </div>
+                                            <span>{response._libelle}</span>
+                                            
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        )}
+                        <div className='reponse-other-container'>
+                            {reponses.length > 0 && reponses[reponses.length - 1]._solution !== 1 && (
+                                <button className="input__button m__initial" onClick={handleCreateSolution}>
+                                    Ajouter une solution
+                                </button>
+                            )}
+                            {update_id_statut != clotureId && (reponses.length > 0 && reponses[reponses.length - 1]._solution == 1 && reponses[reponses.length - 1]._id_utilisateur != user_connected) && (
+                                <button className="input__button m__initial ms-2" onClick={handleCreateReponse}>
+                                    Répondre
+                                </button>
+                            )}
+                            {reponses.length == 0 && update_id_statut != clotureId && (
+                                <button className="input__button m__initial ms-2" onClick={handleCreateReponse}>
+                                    Répondre
+                                </button>
+                            )}
+                            {reponses.length > 0 && reponses[reponses.length - 1]._solution !== 1 && update_id_statut != clotureId && (
+                                <button className="input__button m__initial ms-2" onClick={handleCreateReponse}>
+                                    Répondre
+                                </button>
+                            )}
                         </div>
-                        <div className="input-group">
-                            <label htmlFor="id_statut">Statut :</label>
-                            <select
-                                id="id_statut"
-                                className="input__select w__100"
-                                value={update_id_statut}
-                                onChange={(e) => update_setStatut(e.target.value)}
-                            >
-                                <option value="" disabled>
-                                    Chosir un statut
-                                </option>
-                                {statuts.map((statut) => {
-                                    if (statut._libelle !== 'Clôturé') {
-                                        return (
-                                            <option
-                                                key={statut._id}
-                                                value={statut._id}
-                                            >
-                                                {`${statut._libelle}`}
-                                            </option>
-                                        );
-                                    }
-                                    return null;
-                                })}
-                            </select>
-                        </div>
-                        <div className="input-group d__flex  w__30">
-                            <button className="input__button" type="submit">
-                                Modifier
-                            </button>
-                            <button className="input__button" onClick={handleDelete}>
-                                Supprimer
-                            </button>
-                            <button className="input__button" onClick={handleCloture}>
-                                Clôturer
-                            </button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>

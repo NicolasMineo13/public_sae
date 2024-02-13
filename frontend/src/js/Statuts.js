@@ -110,9 +110,9 @@ function Statuts() {
             <Header />
             <div className="statuts__container-page">
                 <div className='top__header-page'>
-                    <a href="/home">
+                    <div onClick={() => navigate("/home")}>
                         <img className='back__button' src={back} />
-                    </a>
+                    </div>
                     <h1 className='m-0'>Liste des Statuts</h1>
                     <div className='m__initial' onClick={handleCreateStatut}>
                         <img className='add__button' src={add} />
@@ -192,7 +192,6 @@ function Statuts() {
                                                             justifyContent: 'center', /* Pour centrer horizontalement */
                                                             marginRight: '5px', /* Espacement entre le carré et le texte */
                                                             border: '1px solid #000', /* Bordure d'1 pixel solide noire */
-                                                            opacity: 0.5, /* Opacité de 50% */
                                                         }}
                                                     ></div>
                                                 )}

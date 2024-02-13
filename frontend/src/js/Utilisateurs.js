@@ -157,9 +157,9 @@ function Utilisateurs() {
             <Header />
             <div className="utilisateurs__container">
                 <div className='top__header-page'>
-                    <a href="/home">
+                    <div onClick={() => navigate("/home")}>
                         <img className='back__button' src={back} />
-                    </a>
+                    </div>
                     <h1 className='m-0'>Liste des Utilisateurs</h1>
                     <div className='m__initial' onClick={handleCreateUtilisateur}>
                         <img className='add__button' src={ticket_img} />

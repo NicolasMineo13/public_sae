@@ -1,5 +1,9 @@
-// config.js
+let API_BASE_URL = "";
 
-const API_BASE_URL = "https://35.180.181.179/api";
+if (process.env.NODE_ENV === 'production') {
+    API_BASE_URL = "https://api.nicolas-mineo.fr/api";
+} else {
+    API_BASE_URL = "http://localhost:5000";
+}
 
 export default API_BASE_URL;

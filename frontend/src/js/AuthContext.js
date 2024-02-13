@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
     const location = useLocation();
 
     const isLoggedIn = async () => {
-        if (location.pathname !== '/') {
+        if (location.pathname !== '/' && location.pathname !== '/docs') {
             try {
                 const token = localStorage.getItem('token');
                 const refreshToken = localStorage.getItem('refreshtoken');

@@ -11,12 +11,11 @@ import API_BASE_URL from './config';
 function CreateTicket() {
     const [titre, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    let [date_creation, setCreationDate] = useState('');
     let [id_utilisateur_demandeur, setDemandeur] = useState('');
     const [id_utilisateur_technicien, setTechnicien] = useState('');
     let [id_statut, setStatut] = useState('');
 
-    date_creation = moment().tz('Europe/Paris').format('YYYY-MM-DD HH:mm');
+    const date_creation = moment().tz('Europe/Paris').format('YYYY-MM-DD HH:mm');
     id_statut = '1';
     const id = localStorage.getItem('id');
     id_utilisateur_demandeur = id;
@@ -149,13 +148,13 @@ function CreateTicket() {
             <Header />
             <div className="create-ticket__container-page">
                 <div className='top__header-page'>
-                    <a href="/tickets">
+                    <div onClick={() => navigate("/tickets")}>
                         <img className='back__button' src={back} />
-                    </a>
+                    </div>
                     <h1>Créer un Ticket</h1>
-                    <a className='m__initial' href="/home">
+                    <div className='m__initial' onClick={() => navigate("/home")}>
                         <img className='home__button' src={home} />
-                    </a>
+                    </div>
                 </div>
                 <div className='form-container'>
                     <form onSubmit={handleSubmit}>
@@ -166,17 +165,6 @@ function CreateTicket() {
                         <div className="input-group">
                             <label htmlFor="description">Description :</label>
                             <textarea className="input__text" id="description" placeholder='Description...' value={description} onChange={(e) => setDescription(e.target.value)} required />
-                        </div>
-                        <div className="input-group">
-                            <label htmlFor="date_creation">Date de Création :</label>
-                            <input
-                                className="input__text"
-                                type="datetime-local"
-                                id="date_creation"
-                                defaultValue={date_creation}
-                                onChange={(e) => setCreationDate(e.target.value)}
-                                required
-                            />
                         </div>
                         <div className="input-group">
                             <label htmlFor="id_utilisateur_demandeur">Demandeur :</label>
@@ -222,14 +210,17 @@ function CreateTicket() {
                                 required
                             >
                                 <option value="" disabled>Choisir un statut</option>
-                                {statuts.map((statut) => (
-                                    <option
-                                        key={statut._id}
-                                        value={statut._id}
-                                    >
-                                        {`${statut._libelle}`}
-                                    </option>
-                                ))}
+                                {statuts.map((statut) => {
+                                    if (statut._libelle !== "Clos" && statut._libelle !== "Résolu")
+                                        return (
+                                            <option
+                                                key={statut._id}
+                                                value={statut._id}
+                                            >
+                                                {`${statut._libelle}`}
+                                            </option>
+                                        );
+                                })}
                             </select>
                         </div>
                         <button className="input__button" type="submit">Créer</button>

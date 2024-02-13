@@ -40,7 +40,7 @@ export class UtilisateursMysqlDAO extends UtilisateursDAO {
 			const oldRefreshToken = utilisateur.refreshToken;
 
 			const secretKey = process.env.JWT_SECRET_KEY;
-			const token = jwt.sign({ userId: utilisateur.id, login: utilisateur.login }, secretKey, { expiresIn: "15m" });
+			const token = jwt.sign({ userId: utilisateur.id, login: utilisateur.login }, secretKey, { expiresIn: "1d" });
 			const secretRefreshTokenKey = process.env.REFRESH_TOKEN_SECRET;
 			const refreshToken = jwt.sign({ userId: utilisateur.id, login: utilisateur.login }, secretRefreshTokenKey, { expiresIn: "7d" });
 

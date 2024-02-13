@@ -34,12 +34,16 @@ body {
 	justify-content: start !important;
 }
 
+.j__center {
+	justify-content: center !important;
+}
+
 .t__center {
 	text-align: center;
 }
 
 .w__100 {
-	width: 100%!important;
+	width: 100% !important;
 }
 
 .d__flex {
@@ -50,4 +54,13 @@ body {
 
 .w__30 {
 	width: 30% !important;
+}
+
+.swagger__docs {
+	max-height: 100vh; /* Ajustez la hauteur maximale selon vos besoins */
+	overflow-y: auto; /* Ajoute une barre de défilement verticale si nécessaire */
+}
+
+.ms-2 {
+	margin-left: 1vh !important;
 }

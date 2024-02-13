@@ -111,9 +111,9 @@ function Roles() {
             <Header />
             <div className="roles__container-page">
                 <div className='top__header-page'>
-                    <a href="/home">
+                    <div onClick={() => navigate("/home")}>
                         <img className='back__button' src={back} />
-                    </a>
+                    </div>
                     <h1 className='m-0'>Liste des Roles</h1>
                     <div className='m__initial' onClick={handleCreateRole}>
                         <img className='add__button' src={add} />

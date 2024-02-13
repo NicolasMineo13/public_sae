@@ -5,6 +5,7 @@ import ticketsRoutes from "./routes/ticketsRoutes.js";
 import rolesRoutes from "./routes/rolesRoutes.js";
 import permissionsRoutes from "./routes/permissionsRoutes.js";
 import statutsRoutes from "./routes/statutsRoutes.js";
+import reponsesRoutes from "./routes/reponsesRoutes.js";
 import { verifyToken } from "./middlewares/verifyToken.js";
 import { getDatabasePool } from "./db.js";
 import dotenv from 'dotenv';
@@ -24,6 +25,7 @@ app.use("/tickets", ticketsRoutes);
 app.use("/roles", rolesRoutes);
 app.use("/permissions", permissionsRoutes);
 app.use("/statuts", statutsRoutes);
+app.use("/reponses", reponsesRoutes);
 app.use("/verifyToken", verifyToken, (req, res) => {
     res.json({ status: true });
 });

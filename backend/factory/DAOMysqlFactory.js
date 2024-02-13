@@ -4,6 +4,7 @@ import { TicketsMysqlDAO } from "../dao/ticketsMysqlDAO.js";
 import { RolesMysqlDAO } from "../dao/rolesMysqlDAO.js";
 import { PermissionsMysqlDAO } from "../dao/permissionsMysqlDAO.js";
 import { StatutsMysqlDAO } from "../dao/statutsMysqlDAO.js";
+import { ReponsesMysqlDAO } from "../dao/reponsesMysqlDAO.js";
 
 export class DAOMysqlFactory extends DAOFactory {
     constructor() {
@@ -28,5 +29,9 @@ export class DAOMysqlFactory extends DAOFactory {
 
     createStatutsDAO() {
         return new StatutsMysqlDAO();
+    }
+
+    createReponsesDAO() {
+        return new ReponsesMysqlDAO();
     }
 }

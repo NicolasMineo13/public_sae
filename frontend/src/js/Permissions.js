@@ -110,9 +110,9 @@ function Permissions() {
             <Header />
             <div className="permissions__container-page">
                 <div className='top__header-page'>
-                    <a href="/home">
+                    <div onClick={() => navigate("/home")}>
                         <img className='back__button' src={back} />
-                    </a>
+                    </div>
                     <h1 className='m-0'>Liste des Permissions</h1>
                     <div className='m__initial' onClick={handleCreatePermission}>
                         <img className='add__button' src={ticket_img} />

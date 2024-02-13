@@ -152,13 +152,13 @@ function DetailStatut() {
             <Header />
             <div className="detail-statuts__container-page">
                 <div className="top__header-page">
-                    <a href="/statuts">
+                    <div onClick={() => navigate("/statuts")}>
                         <img className='back__button' src={back} />
-                    </a>
+                    </div>
                     <h1>Affichage du statut N°{id} - {libelle}</h1>
-                    <a className='m__initial' href="/home">
+                    <div className='m__initial' onClick={() => navigate("/home")}>
                         <img className='home__button' src={home} />
-                    </a>
+                    </div>
                 </div>
                 <div className="form-container">
                     <form onSubmit={handleUpdate}>

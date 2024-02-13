@@ -106,13 +106,13 @@ function CreateUtilisateur() {
             <Header />
             <div className="create-utilisateur__container-page">
                 <div className='top__header-page'>
-                    <a href="/utilisateurs">
+                    <div onClick={() => navigate("/utilisateurs")}>
                         <img className='back__button' src={back} />
-                    </a>
+                    </div>
                     <h1>Créer un utilisateur</h1>
-                    <a className='m__initial' href="/home">
+                    <div className='m__initial' onClick={() => navigate("/home")}>
                         <img className='home__button' src={home} />
-                    </a>
+                    </div>
                 </div>
                 <div className='form-container'>
                     <form onSubmit={handleSubmit}>
@@ -132,13 +132,13 @@ function CreateUtilisateur() {
                             <label htmlFor="password">Mot de passe :</label>
                             <input className="input__text" type="password" id="password" placeholder='Mot de passe...' value={password} onChange={(e) => setPassword(e.target.value)} required />
                         </div>
-                        <div className="input-group">
+                        <div className="input-group w__100">
                             <label htmlFor="id_role">Rôle :</label>
                             <select
                                 id="id_role"
                                 value={id_role}
                                 onChange={(e) => setRole(e.target.value)}
-                                className="input__select"
+                                className="input__select w__100"
                                 required
                             >
                                 <option value="" disabled>Choisir un rôle</option>

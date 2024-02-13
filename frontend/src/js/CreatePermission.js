@@ -60,13 +60,13 @@ function CreatePermission() {
             <Header />
             <div className="create-permission__container-page">
                 <div className='top__header-page'>
-                    <a href="/permissions">
+                    <div onClick={() => navigate("/permissions")}>
                         <img className='back__button' src={back} />
-                    </a>
+                    </div>
                     <h1>Créer un Permission</h1>
-                    <a className='m__initial' href="/home">
+                    <div className='m__initial' onClick={() => navigate("/home")}>
                         <img className='home__button' src={home} />
-                    </a>
+                    </div>
                 </div>
                 <div className='form-container'>
                     <form onSubmit={handleSubmit}>
@@ -79,7 +79,7 @@ function CreatePermission() {
                 </div>
 
             </div>
-        </div>
+        </div >
     );
 }
 

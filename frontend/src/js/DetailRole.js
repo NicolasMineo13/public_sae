@@ -136,13 +136,13 @@ function DetailRole() {
             <Header />
             <div className="detail-role__container-page">
                 <div className="top__header-page">
-                    <a href="/roles">
+                    <div onClick={() => navigate("/roles")}>
                         <img className='back__button' src={back} />
-                    </a>
+                    </div>
                     <h1>Affichage du role N°{id} - {libelle}</h1>
-                    <a className='m__initial' href="/home">
+                    <div className='m__initial' onClick={() => navigate("/home")}>
                         <img className='home__button' src={home} />
-                    </a>
+                    </div>
                 </div>
                 <div className="form-container">
                     <form onSubmit={handleUpdate}>

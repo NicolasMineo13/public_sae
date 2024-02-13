@@ -209,20 +209,6 @@ function Tickets() {
         }
     }, [tickets]);
 
-    function hexToRgb(hex, alpha) {
-        if (!hex || hex === '#null') {
-            return ''; // Retourne une chaîne vide si la couleur est null ou non définie
-        }
-
-        hex = hex.startsWith('#') ? hex.slice(1) : hex; // Supprime le '#' s'il est présent
-
-        const r = parseInt(hex.slice(0, 2), 16);
-        const g = parseInt(hex.slice(2, 4), 16);
-        const b = parseInt(hex.slice(4, 6), 16);
-
-        return `rgba(${r},${g},${b},${alpha})`;
-    }
-
     const handleKeyPress = (event) => {
         if (event.key === 'Enter') {
             handleAddFilter();
@@ -234,9 +220,9 @@ function Tickets() {
             <Header />
             <div className="tickets__container-page">
                 <div className='top__header-page'>
-                    <a href="/home">
+                    <div onClick={() => navigate("/home")}>
                         <img className='back__button' src={back} />
-                    </a>
+                    </div>
                     <h1 className='m-0'>Liste des Tickets</h1>
                     <div className='m__initial' onClick={handleCreateTicket}>
                         <img className='add__button' src={ticket_img} />
@@ -258,14 +244,14 @@ function Tickets() {
                                 <option value="date_cloture">Date de clôture</option>
                             </select>
                         </div>
-                        <div className='input-group input__group__block'>
+                        {/* <div className='input-group input__group__block'>
                             <button
                                 className='input__button'
                                 onClick={() => fetchTickets(filterField)}
                             >
                                 Trier par
                             </button>
-                        </div>
+                        </div> */}
                         <div className='input-group input__group__block'>
                             <label>Recherche</label>
                             <input
@@ -322,7 +308,7 @@ function Tickets() {
                                         >
                                             <td>{ticket._id}</td>
                                             <td>{ticket._titre}</td>
-                                            <td><p className='tag' style={statut_color[ticket._id_statut] !== null ? { backgroundColor: hexToRgb(statut_color[ticket._id_statut], 0.5) } : {}}>{statut[ticket._id_statut] || 'Chargement...'}</p></td>
+                                            <td><p className='tag' style={statut_color[ticket._id_statut] !== null ? { backgroundColor: statut_color[ticket._id_statut] } : {}}>{statut[ticket._id_statut] || 'Chargement...'}</p></td>
                                             <td>{new Date(ticket._date_derniere_modif).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
                                             <td>{new Date(ticket._date_creation).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
                                             <td>{userNames[ticket._id_utilisateur_demandeur] || 'Chargement...'}</td>

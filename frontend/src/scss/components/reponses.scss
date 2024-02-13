@@ -1,0 +1,79 @@
+.details-response-container {
+	display: flex;
+	width: 100%;
+	flex-direction: row-reverse;
+	align-items: flex-start;
+	.ticket-info-container {
+		width: 20%;
+		margin: right;
+		display: flex;
+		align-items: flex-start;
+		justify-content: center;
+	}
+	.response-info-container {
+		width: 80%;
+		.add_reponse_button {
+			width: 80%;
+			display: flex;
+			justify-content: left;
+			padding-top: 10px;
+		}
+		
+		.main-reponse-container {
+			width: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-direction: column;
+			padding-top: 20px;
+		}
+		
+		.reponse-container {
+			width: 95%;
+			display: flex;
+			justify-content: left;
+			padding-top: 20px;
+			margin-left: 20px;
+		}
+		
+		.reponse-other-container {
+			width: 98%;
+			display: flex;
+			justify-content: right;
+			padding-top: 20px;
+			margin-left: 20px;
+		}
+		
+		.reponse {
+			box-shadow: 0rem 0.3125rem 0.3125rem 0rem rgba(82, 63, 105, 0.05);
+			width: 80%;
+			background-color: white;
+			padding: 10px;
+			border-radius: 10px;
+			display: flex;
+			justify-content: space-between;
+			flex-direction: column;
+			.header-response {
+				width: 100%;
+				text-align: left;
+				border-bottom: 1px solid grey;
+				margin-bottom: 20px;
+				display: flex;
+				justify-content: space-between;
+				.text {
+					span {
+						margin-left: 10px;
+						font-style: italic;
+						font-size: 0.8rem;
+					}
+				}
+				.trash {
+
+				}
+				
+			}
+		}
+	}
+}
+
+
