@@ -3,7 +3,7 @@ import { Role } from "../models/role.js";
 
 const RolesController = {
     getRoles: async (req, res) => {
-        const { id, libelle } = req.query;
+        const { id, libelle, by_default } = req.query;
         let conditions = {};
 
         if (id) {
@@ -14,6 +14,10 @@ const RolesController = {
             conditions.libelle = libelle;
         }
 
+        if (by_default) {
+            conditions.by_default = by_default;
+        }
+
         try {
             const roles = await RolesService.getRoles(
                 conditions
@@ -21,7 +25,8 @@ const RolesController = {
 
             const rolesObject = roles.map(role => new Role(
                 role.id,
-                role.libelle
+                role.libelle,
+                role.by_default
             ));
 
             res.json({ roles: rolesObject });

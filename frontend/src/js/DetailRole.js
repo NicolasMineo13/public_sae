@@ -11,6 +11,7 @@ function DetailRole() {
     const [libelle, setLibelle] = useState('');
 
     const [update_libelle, update_setLibelle] = useState('');
+    const [by_default, setBy_default] = useState('');
 
     const navigate = useNavigate();
 
@@ -118,6 +119,7 @@ function DetailRole() {
             if (Array.isArray(data.roles) && data.roles.length > 0) {
                 const RoleData = data.roles[0];
                 setLibelle(RoleData._libelle);
+                setBy_default(RoleData._by_default);
                 // Séparation des données de mise à jour
                 update_setLibelle(RoleData._libelle);
             } else {
@@ -130,6 +132,8 @@ function DetailRole() {
             console.error("Error fetching roles:", error);
         }
     };
+
+    console.log(by_default);
 
     return (
         <div className="container-page">
@@ -145,26 +149,31 @@ function DetailRole() {
                     </div>
                 </div>
                 <div className="form-container">
-                    <form onSubmit={handleUpdate}>
-                        <div className="input-group">
-                            <label htmlFor="libelle">Libellé :</label>
-                            <input
-                                className="input__text"
-                                type="text"
-                                id="libelle"
-                                value={update_libelle}
-                                onChange={(e) => update_setLibelle(e.target.value)}
-                            />
-                        </div>
-                        <div className="input-group d__flex  w__30">
-                            <button className="input__button" type="submit">
-                                Modifier
-                            </button>
-                            <a className="input__button" onClick={handleDelete}>
-                                Supprimer
-                            </a>
-                        </div>
-                    </form>
+                    {by_default !== '' && (
+                        <form onSubmit={handleUpdate}>
+                            <div className="input-group">
+                                <label htmlFor="libelle">Libellé :</label>
+                                <input
+                                    className="input__text"
+                                    type="text"
+                                    id="libelle"
+                                    value={update_libelle}
+                                    disabled={by_default == 1}
+                                    onChange={(e) => update_setLibelle(e.target.value)}
+                                />
+                            </div>
+                            {by_default == 0 && (
+                                <div className="input-group d__flex  w__30">
+                                    <button className="input__button" type="submit">
+                                        Modifier
+                                    </button>
+                                    <a className="input__button" onClick={handleDelete}>
+                                        Supprimer
+                                    </a>
+                                </div>
+                            )}
+                        </form>
+                    )}
                 </div>
             </div>
         </div>

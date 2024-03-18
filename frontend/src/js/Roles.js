@@ -5,6 +5,8 @@ import { useAuth } from './AuthContext';
 import { useNavigate } from 'react-router-dom';
 import add from '../assets/icons/add.svg';
 import back from '../assets/icons/back.svg';
+import lock from '../assets/icons/lock-red.svg';
+import unlock from '../assets/icons/unlock-green.svg';
 import API_BASE_URL from './config';
 
 function Roles() {
@@ -48,9 +50,10 @@ function Roles() {
             }
 
             const data = await response.json();
-            console.log(data);
+            // console.log(data);
             if (Array.isArray(data.roles)) {
                 setRoles(data.roles);
+                // console.log(data.roles);
             } else {
                 console.error('La réponse API ne renvoie pas un tableau de roles:', data);
             }
@@ -171,9 +174,16 @@ function Roles() {
                                 </thead>
                                 <tbody>
                                     {roles.map(role => (
-                                        <tr className='pointer' onClick={openDetail} key={role._id}>
+                                        <tr className={role._by_default ? 'pointer default-role' : 'pointer'} onClick={openDetail} key={role._id}>
                                             <td>{role._id}</td>
                                             <td>{role._libelle}</td>
+                                            <td>
+                                                {role._by_default ? (
+                                                    <img src={lock} alt="Role par défaut" />
+                                                ) : (
+                                                    <img src={unlock} alt="Role non par défaut" />
+                                                )}
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>

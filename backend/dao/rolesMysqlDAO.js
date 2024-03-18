@@ -25,6 +25,11 @@ export class RolesMysqlDAO extends RolesDAO {
                 params.push(filter.libelle);
             }
 
+            if (filter.by_default) {
+                conditions.push("by_default = ?");
+                params.push(filter.byDefault);
+            }
+
             // Construisez la requête
             let query = "SELECT * FROM roles";
             if (conditions.length > 0) {
@@ -69,6 +74,12 @@ export class RolesMysqlDAO extends RolesDAO {
             const pool = await this.pool;
             const db = await pool.getConnection();
 
+            const [role] = await db.execute("SELECT by_default FROM roles WHERE id = ?", [id]);
+            if (role[0].by_default === 1) {
+                db.release();
+                throw new Error("Impossible de modifier un role par défaut");
+            }
+
             const { libelle } = updatedFields;
 
             let query = "UPDATE roles SET";
@@ -104,6 +115,12 @@ export class RolesMysqlDAO extends RolesDAO {
         try {
             const pool = await this.pool;
             const db = await pool.getConnection();
+
+            const [role] = await db.execute("SELECT by_default FROM roles WHERE id = ?", [id]);
+            if (role[0].by_default === 1) {
+                db.release();
+                throw new Error("Impossible de supprimer un role par défaut");
+            }
 
             const result = await db.execute("DELETE FROM roles WHERE id = ?", [id]);
             if (result[0].affectedRows > 0) {
