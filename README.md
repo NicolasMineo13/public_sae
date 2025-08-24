@@ -52,7 +52,7 @@ Le frontend communique avec le backend via une API REST pour récupérer et mani
 
 Pour déployer le frontend localement, suivez ces étapes :
 
-1. Clonez ce dépôt Git depuis [https://github.com/NicolasMineo13/sae_gestionnaire_de_tickets.git](https://github.com/NicolasMineo13/sae_gestionnaire_de_tickets.git).
+1. Clonez ce dépôt Git depuis [https://github.com/NicolasMineo13/public_sae.git](https://github.com/NicolasMineo13/public_sae.git).
 2. Assurez-vous d'avoir Node.js installé sur votre machine.
 3. Dans le répertoire du **frontend**, exécutez la commande suivante pour installer les dépendances :
 
@@ -74,7 +74,7 @@ Le backend de l'application est développé en Node.js avec Express, utilisant u
 
 Pour déployer le backend localement, suivez ces étapes :
 
-1. Clonez ce dépôt Git si ce n'est pas déjà fait, depuis [https://github.com/NicolasMineo13/sae_gestionnaire_de_tickets.git](https://github.com/NicolasMineo13/sae_gestionnaire_de_tickets.git).
+1. Clonez ce dépôt Git si ce n'est pas déjà fait, depuis [https://github.com/NicolasMineo13/public_sae.git](https://github.com/NicolasMineo13/public_sae.git).
 2. Assurez-vous d'avoir Node.js installé sur votre machine.
 3. Dans le répertoire du **backend**, exécutez la commande suivante pour installer les dépendances :
 
