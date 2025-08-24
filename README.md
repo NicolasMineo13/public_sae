@@ -54,7 +54,7 @@ Le frontend communique avec le backend via une API REST pour récupérer et mani
 
 Pour déployer le frontend localement, suivez ces étapes :
 
-1. Clonez ce dépôt Git depuis [https://github.com/NicolasMineo13/public_sae.git](https://github.com/NicolasMineo13/public_sae.git).
+1. Clonez ce dépôt Git depuis [https://github.com/NicolasMineo13/ticket_management_system](https://github.com/NicolasMineo13/ticket_management_system).
 2. Assurez-vous d'avoir Node.js installé sur votre machine.
 3. Dans le répertoire du **frontend**, exécutez la commande suivante pour installer les dépendances :
 
@@ -76,7 +76,7 @@ Le backend de l'application est développé en Node.js avec Express, utilisant u
 
 Pour déployer le backend localement, suivez ces étapes :
 
-1. Clonez ce dépôt Git si ce n'est pas déjà fait, depuis [https://github.com/NicolasMineo13/public_sae.git](https://github.com/NicolasMineo13/public_sae.git).
+1. Clonez ce dépôt Git si ce n'est pas déjà fait, depuis [https://github.com/NicolasMineo13/ticket_management_system](https://github.com/NicolasMineo13/ticket_management_system).
 2. Assurez-vous d'avoir Node.js installé sur votre machine.
 3. Dans le répertoire du **backend**, exécutez la commande suivante pour installer les dépendances :
 
@@ -157,7 +157,7 @@ The frontend communicates with the backend via a REST API to retrieve and manipu
 
 To deploy the frontend locally, follow these steps:
 
-1. Clone this Git repository from [https://github.com/NicolasMineo13/public\_sae.git](https://github.com/NicolasMineo13/public_sae.git).
+1. Clone this Git repository from [https://github.com/NicolasMineo13/public\_sae.git](https://github.com/NicolasMineo13/ticket_management_system).
 2. Make sure Node.js is installed on your machine.
 3. In the **frontend** directory, run the following command to install dependencies:
 
@@ -179,7 +179,7 @@ The backend is developed using Node.js with Express and uses a MySQL database to
 
 To deploy the backend locally, follow these steps:
 
-1. Clone this Git repository (if not already done) from [https://github.com/NicolasMineo13/public\_sae.git](https://github.com/NicolasMineo13/public_sae.git).
+1. Clone this Git repository (if not already done) from [https://github.com/NicolasMineo13/public\_sae.git](https://github.com/NicolasMineo13/ticket_management_system).
 2. Ensure Node.js is installed on your machine.
 3. In the **backend** directory, run the following command to install dependencies:
 
