@@ -157,7 +157,7 @@ The frontend communicates with the backend via a REST API to retrieve and manipu
 
 To deploy the frontend locally, follow these steps:
 
-1. Clone this Git repository from [https://github.com/NicolasMineo13/public\_sae.git](https://github.com/NicolasMineo13/ticket_management_system).
+1. Clone this Git repository from [https://github.com/NicolasMineo13/ticket_management_system](https://github.com/NicolasMineo13/ticket_management_system).
 2. Make sure Node.js is installed on your machine.
 3. In the **frontend** directory, run the following command to install dependencies:
 
@@ -179,7 +179,7 @@ The backend is developed using Node.js with Express and uses a MySQL database to
 
 To deploy the backend locally, follow these steps:
 
-1. Clone this Git repository (if not already done) from [https://github.com/NicolasMineo13/public\_sae.git](https://github.com/NicolasMineo13/ticket_management_system).
+1. Clone this Git repository (if not already done) from [https://github.com/NicolasMineo13/ticket_management_system](https://github.com/NicolasMineo13/ticket_management_system).
 2. Ensure Node.js is installed on your machine.
 3. In the **backend** directory, run the following command to install dependencies:
 
