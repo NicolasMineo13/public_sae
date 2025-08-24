@@ -88,12 +88,6 @@ Pour déployer le backend localement, suivez ces étapes :
    ```
 5. Le backend devrait maintenant être accessible à l'adresse [http://localhost:5000](http://localhost:port) dans votre navigateur.
 
-## Utilisation de la Version Hébergée
-
-Si vous préférez éviter de déployer localement le frontend et le backend, vous pouvez également accéder à la version hébergée du projet à l'adresse suivante : [https://api.nicolas-mineo.fr](https://api.nicolas-mineo.fr). Cette version offre une expérience utilisateur similaire à celle du déploiement local, mais sans nécessiter d'installation ni de configuration supplémentaire.
-
-N'oubliez pas de consulter la documentation de l'API pour obtenir des informations détaillées sur les endpoints disponibles et leur utilisation : [Documentation de l&#39;API](https://api.nicolas-mineo.fr/docs).
-
 ## Prochaines Étapes
 
 - **Gestion des Permissions :** Implémenter un système de gestion des permissions plus robuste pour contrôler l'accès aux fonctionnalités de l'application.
@@ -102,7 +96,3 @@ N'oubliez pas de consulter la documentation de l'API pour obtenir des informatio
 - **Création des Catégories de Tickets :** Introduire la possibilité de catégoriser les tickets en fonction de leur type (ex. : technique, administratif, support client, etc.), ce qui simplifiera leur gestion et leur traitement.
 - **Correction des Bugs et des Duplications de Code :** Modifier le comportement de l'application pour afficher des messages d'erreur explicites à la place des logs en cas d'échec des opérations ou d'erreurs de validation.
 - **Affichage des messages d'erreur** : Actuellement tous les messages d'erreurs dans la console, j'aimerais faire de vrais messages pour indiquer à l'utilisateur ce qui ne va pas.
-
-## Documentation
-
-Pour accéder à la documentation de l'API, veuillez suivre ce lien : [Documentation de l&#39;API](https://api.nicolas-mineo.fr/docs)
